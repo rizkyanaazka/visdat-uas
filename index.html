@@ -128,9 +128,9 @@ const VV=['uhh','hls','rls','pengeluaran','miskin','tpt','tpak','gini','sanitasi
 
 /* ---------- proyeksi kanvas ---------- */
 function proj(cv,v){const W=cv.clientWidth,H=cv.clientHeight,r=devicePixelRatio||1;if(cv.width!==Math.round(W*r)){cv.width=W*r;cv.height=H*r}const c=cv.getContext('2d');c.setTransform(r,0,0,r,0,0);c.clearRect(0,0,W,H);const dx=v[1]-v[0],dy=v[3]-v[2],s=Math.min(W/dx,H/dy),ox=(W-dx*s)/2,oy=(H-dy*s)/2;return{c,W,H,s,X:l=>ox+(l-v[0])*s,Y:l=>oy+(v[3]-l)*s}}
-/* ---------- hero: sapuan dari barat ke timur ---------- */
-let t0=performance.now();
-function hero(now){const p=proj($('#hc'),[94.5,141.5,-11.5,6.5]),t=RM?1:Math.min(1,((now||performance.now())-t0)/2600);K.forEach(d=>{const a=Math.max(0,Math.min(1,(t*1.4-(d.lo-94.5)/47)*6));if(a<=0)return;p.c.globalAlpha=a;p.c.fillStyle=ipmC(d.ipm[S.y]);p.c.beginPath();p.c.arc(p.X(d.lo),p.Y(d.la),Math.max(1.6,p.s*.15),0,7);p.c.fill()});if(t<1)requestAnimationFrame(hero)}
+/* ---------- hero: sapuan dari barat ke timur, berulang tanpa henti seperti GIF ---------- */
+let t0=performance.now(),hRaf=0;const hCY=5200,hIN=2600,hHO=1900; // sapuan 2,6 dtk, tahan 1,9 dtk, pudar 0,7 dtk, lalu ulang
+function hero(now){const p=proj($('#hc'),[94.5,141.5,-11.5,6.5]),e=RM?hIN:Math.max(0,(now||performance.now())-t0)%hCY,t=Math.min(1,e/hIN),fo=1-Math.max(0,(e-hIN-hHO)/(hCY-hIN-hHO));K.forEach(d=>{const a=Math.max(0,Math.min(1,(t*1.4-(d.lo-94.5)/47)*6))*fo;if(a<=0)return;p.c.globalAlpha=a;p.c.fillStyle=ipmC(d.ipm[S.y]);p.c.beginPath();p.c.arc(p.X(d.lo),p.Y(d.la),Math.max(1.6,p.s*.15),0,7);p.c.fill()})}
 /* ---------- peta kab/kota ---------- */
 const mc=$('#map'),TILT=.74;let mode='ipm',view,tgt,raf,rz,hv=null,hk=1,pts=[],cells=[],BRD=[],inv=null,lk='';const LANDS={};
 /* Berkas batas wilayah belum ada, jadi bentuk wilayah diperkirakan dari 514 titik koordinat:
@@ -328,15 +328,20 @@ g.selectAll('rect').data(p=>VV.map((v,j)=>({p,j,x:p.v[v][S.y]}))).join('rect').a
 const dk=$('.dock');dk.innerHTML=`<div class="yr">${Y.map((y,i)=>`<button type="button" data-y="${i}" aria-pressed="false">${y}</button>`).join('')}<button type="button" data-all="1" title="Rata-rata 2021–2025">Semua</button></div><select id="si" aria-label="Pilih pulau"><option value="">Semua pulau</option>${[...new Set(P.map(p=>p.i))].map(i=>`<option>${i}</option>`).join('')}</select><select id="sp" aria-label="Pilih provinsi"></select>`;
 const fillP=()=>{$('#sp').innerHTML='<option value="">Semua provinsi</option>'+P.filter(p=>!S.isl||p.i===S.isl).map(p=>`<option>${p.n}</option>`).join('');$('#sp').value=S.pv};
 let ready=0;
-function upd(){hp=S.pv?[P.find(p=>p.n===S.pv).i,S.pv]:S.isl?[S.isl]:[];nar();cards();setT();selRise();if(ready){t0=-9e9;hero()}trDraw();pcaDraw();hmDraw();hDraw();dbDraw();nwDraw();wcDraw();flDraw();$$('.yr button').forEach(b=>{const on=b.dataset.all!==undefined?S.ys.size===5:S.ys.has(+b.dataset.y);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})}
+function upd(){hp=S.pv?[P.find(p=>p.n===S.pv).i,S.pv]:S.isl?[S.isl]:[];nar();cards();setT();selRise();if(ready)hero();trDraw();pcaDraw();hmDraw();hDraw();dbDraw();nwDraw();wcDraw();flDraw();$$('.yr button').forEach(b=>{const on=b.dataset.all!==undefined?S.ys.size===5:S.ys.has(+b.dataset.y);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})}
 dk.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.all!==undefined)S.ys=new Set([0,1,2,3,4]);else{const i=+b.dataset.y;if(S.ys.size===5)S.ys=new Set([i]);else if(S.ys.has(i)){if(S.ys.size>1)S.ys.delete(i)}else S.ys.add(i)}setYears();upd()};
 $('#si').onchange=e=>{S.isl=e.target.value;S.pv='';fillP();upd()};
 $('#sp').onchange=e=>{S.pv=e.target.value;if(S.pv){S.isl=P.find(p=>p.n===S.pv).i;$('#si').value=S.isl}fillP();upd()};
-let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{t0=-9e9;hero();drawMap()},150)});
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{hero();drawMap()},150)});
 try{S.t=localStorage.getItem('tema')||S.t}catch(e){}if(S.t!=='dark')S.t='light';
 const th=$('#th'),setTh=()=>{document.documentElement.dataset.t=S.t;th.textContent=S.t==='dark'?'Tema terang':'Tema gelap'};setTh();
 th.onclick=()=>{S.t=S.t==='dark'?'light':'dark';try{localStorage.setItem('tema',S.t)}catch(e){}setTh();legend();upd()};
-dk.classList.add('show');
-fillP();legend();upd();ready=1;t0=performance.now();requestAnimationFrame(hero);
+/* panel pengatur baru tampil mulai bagian "Lima tahun, tujuh pulau" ke bawah */
+const trS=$('#tr').closest('section'),dockVis=()=>dk.classList.toggle('show',trS.getBoundingClientRect().top<innerHeight*.6);
+addEventListener('scroll',dockVis,{passive:true});addEventListener('resize',dockVis);dockVis();
+fillP();legend();upd();ready=1;t0=performance.now();
+/* peta hero berputar terus (loop) selama terlihat di layar */
+const hLoop=n=>{hero(n);if(!RM)hRaf=requestAnimationFrame(hLoop)};
+new IntersectionObserver(en=>{cancelAnimationFrame(hRaf);if(en[en.length-1].isIntersecting)hRaf=requestAnimationFrame(hLoop)}).observe($('.hero'));
 </script>
 </body></html>
