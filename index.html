@@ -51,7 +51,7 @@ footer small{display:block;max-width:44em;opacity:.8;font:400 .85rem/1.5 var(--f
 .nwl{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;font:500 .85rem var(--f);margin-top:.4rem}.nwl i{display:inline-block;width:.8em;height:.8em;border-radius:50%;margin-right:.4em;vertical-align:-.05em}.nwl u{display:inline-block;width:1.4em;height:4px;border-radius:2px;margin-right:.4em;vertical-align:.2em}#nw{max-width:600px;cursor:default;touch-action:none}
 .jump{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.1rem}.jump a{font:600 .92rem var(--f);padding:.45rem .95rem;border:1.5px solid var(--sun);border-radius:999px;color:var(--ink);text-decoration:none;background:var(--bg2)}.jump a:hover,.jump a:focus-visible{background:var(--sun);color:var(--pap);outline:none}
 .th{position:fixed;top:12px;right:12px;z-index:9;font:600 .8rem var(--f);color:var(--ink);background:var(--dock);border:1px solid var(--ln);border-radius:999px;padding:7px 13px;cursor:pointer;backdrop-filter:blur(8px)}
-</style></head><body>
+.mp svg{width:100%;height:auto;max-height:70vh;background:var(--bg2);border-radius:8px;touch-action:none}.ctl{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;font:500 .95rem var(--f);margin:.4rem 0 .8rem}.ctl label{display:flex;gap:.3rem;align-items:center}.ctl input[type=text]{font:inherit;padding:.3rem .6rem;border:1px solid var(--ln);border-radius:6px;background:var(--pap);color:var(--ink)}.ctl select{font:inherit;padding:.3rem;background:var(--pap);color:var(--ink);border:1px solid var(--ln);border-radius:6px}.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem}.lgd{display:flex;gap:.9rem;flex-wrap:wrap;font:500 .85rem var(--f)}.lgd i{display:inline-block;width:.9em;height:.9em;border-radius:50%;margin-right:.3em;vertical-align:-.1em}.bar{display:flex;align-items:center;gap:.5rem;font:500 .85rem var(--f);margin:.15rem 0}.bar span{flex:0 0 7.5em}.bar u{display:block;height:.9em;background:var(--sun);border-radius:3px;text-decoration:none}.kw{max-height:240px;overflow:auto;font:400 .9rem/1.5 var(--f);border:1px solid var(--ln);border-radius:6px;padding:.4rem .6rem}.kw mark{background:var(--sun);color:#0a1f33;padding:0 .15em;border-radius:3px}</style></head><body>
 <header class="dk hero"><canvas id="hc" role="img" aria-label="Peta titik 514 kabupaten/kota berwarna menurut IPM"></canvas>
 <div class="ht"><h1>Dari Sabang sampai Merauke, seberapa jauh kita melangkah?</h1>
 <p>514 kabupaten/kota, 38 provinsi, lima tahun. Setiap titik di bawah adalah satu wilayah; warnanya adalah nasibnya hari ini. Ceritanya dibaca lewat tiga bekal hidup.</p>
@@ -78,6 +78,11 @@ footer small{display:block;max-width:44em;opacity:.8;font:400 .85rem/1.5 var(--f
 <article class="st" data-m="jm"><h2>Angka kecil, orang yang banyak</h2><p data-n="m3"></p></article>
 </div></section>
 
+<section class="lt" id="a-lisa"><div class="w"><h2>Tetangga yang senasib</h2><p class="lead" id="lp"></p>
+<div class="ctl"><label>Variabel <select id="lv"><option value="ipm">IPM</option><option value="mk">Kemiskinan (%)</option></select></label><label>Tetangga terdekat (k) <select id="lk"><option>4</option><option selected>6</option><option>8</option></select></label><label><input type="checkbox" id="lh" checked> Tampilkan wilayah tidak signifikan</label><button type="button" id="lr">Reset zoom</button></div>
+<div class="g2"><figure class="mp"><svg id="lm" viewBox="0 0 700 420" role="img" aria-label="Peta klaster LISA kabupaten/kota"></svg><figcaption>Peta klaster LISA (titik = kab/kota, posisi dari centroid poligon batas BIG). Geser dan zoom dengan mouse atau jari.</figcaption></figure>
+<figure class="mp"><svg id="ls" viewBox="0 0 420 420" role="img" aria-label="Moran scatterplot"></svg><figcaption>Moran scatterplot: sumbu x = nilai terstandar, sumbu y = rata-rata nilai tetangga (lag spasial).</figcaption></figure></div>
+<div class="lgd" id="ll"></div><p class="src">Sumber: BPS, IPM dan kemiskinan kab/kota; batas wilayah BIG (non-BPS). Bobot spasial k-nearest neighbors terstandar baris; signifikansi LISA 199 permutasi (p&lt;0,05), tanpa koreksi uji berganda.</p></div></section>
 <section class="lt" id="a-multi"><div class="w"><h2>Sepuluh ukuran, satu potret</h2>
 <p class="lead" data-n="p1"></p>
 <div class="duo"><figure><svg id="sc" role="img" aria-label="Biplot PCA provinsi"></svg><figcaption id="cap"></figcaption></figure>
@@ -96,6 +101,11 @@ footer small{display:block;max-width:44em;opacity:.8;font:400 .85rem/1.5 var(--f
 <section class="dk" id="a-teks"><div class="w"><h2>Apa kata nama wilayah?</h2><p class="lead" data-n="tx"></p>
 <figure><svg id="wc" role="img" aria-label="Awan kata dari nama kabupaten/kota"></svg><figcaption id="wcap"></figcaption></figure><p class="src">Ukuran kata = jumlah kabupaten/kota yang memuatnya; warna = rata-rata IPM wilayah tersebut. Sumber: BPS, nama kabupaten/kota dan IPM 2021–2025; diolah.</p></div></section>
 
+<section class="lt" id="a-teks2"><div class="w"><h2>Membedah kata lebih dalam</h2><p class="lead">Pra-pemrosesan: <i>case folding</i> → tokenisasi spasi → buang kata umum (kabupaten, kota, dan kata tugas) → token ≥3 huruf. Korpus: 514 nama kab/kota; dokumen TF-IDF = provinsi (38 dokumen).</p>
+<div class="ctl"><label>Cari kata (KWIC) <input type="text" id="kq" value="sungai" aria-label="Kata kunci"></label><label>Pulau <select id="kz"><option value="">Semua</option></select></label></div>
+<div class="g2"><figure><h3 style="font:600 1rem var(--f)">Kata khas (TF-IDF)</h3><div id="tf"></div></figure><figure><h3 style="font:600 1rem var(--f)">Bigram teratas</h3><div id="bg"></div></figure></div>
+<h3 style="font:600 1rem var(--f);margin-top:1rem" id="kh"></h3><div class="kw" id="kw"></div><svg id="kt" viewBox="0 0 700 150" role="img" aria-label="Persentase nama memuat kata kunci per pulau"></svg>
+<p class="src">Sumber: BPS, nama kab/kota dan IPM 2021–2025; diolah. Keterbatasan: korpus teks belum mencakup BRS/abstrak publikasi BPS (≥100 dokumen narasi); lihat README.</p></div></section>
 <section class="lt" id="a-aliran"><div class="w"><h2>Naik kelas, turun kelas</h2><p class="lead" data-n="fw"></p>
 <figure><svg id="fl" role="img" aria-label="Diagram aliran kabupaten/kota antarkategori IPM 2021-2025"></svg><figcaption>Lebar pita = jumlah kabupaten/kota yang berpindah kategori IPM BPS dari satu tahun ke tahun berikutnya. Arahkan kursor ke pita untuk melihat jumlahnya.</figcaption></figure><p class="src">Kategori BPS: rendah (&lt;60), sedang (60–70), tinggi (70–80), sangat tinggi (≥80). Sumber: BPS</p></div></section>
 
@@ -133,7 +143,7 @@ let t0=performance.now(),hRaf=0;const hCY=5200,hIN=2600,hHO=1900; // sapuan 2,6 
 function hero(now){const p=proj($('#hc'),[94.5,141.5,-11.5,6.5]),e=RM?hIN:Math.max(0,(now||performance.now())-t0)%hCY,t=Math.min(1,e/hIN),fo=1-Math.max(0,(e-hIN-hHO)/(hCY-hIN-hHO));K.forEach(d=>{const a=Math.max(0,Math.min(1,(t*1.4-(d.lo-94.5)/47)*6))*fo;if(a<=0)return;p.c.globalAlpha=a;p.c.fillStyle=ipmC(d.ipm[S.y]);p.c.beginPath();p.c.arc(p.X(d.lo),p.Y(d.la),Math.max(1.6,p.s*.15),0,7);p.c.fill()})}
 /* ---------- peta kab/kota ---------- */
 const mc=$('#map'),TILT=.74;let mode='ipm',view,tgt,raf,rz,hv=null,hk=1,pts=[],cells=[],BRD=[],inv=null,lk='';const LANDS={};
-/* Berkas batas wilayah belum ada, jadi bentuk wilayah diperkirakan dari 514 titik koordinat:
+/* Koordinat memakai centroid poligon batas BIG (474 dari 514 kab/kota; sisanya perkiraan manual). Bentuk wilayah pada peta 3D tetap diperkirakan dari titik:
    daratan = gabungan lingkaran lunak di titik yang DIPILIH pengguna (dihaluskan lalu dikonturkan);
    pembagian kab/kota = diagram Voronoi; garis tebal = batas provinsi perkiraan. */
 function blur(f,nx,ny,r){const t=new Float32Array(f.length),w=2*r+1;for(let j=0;j<ny;j++){let s=0;const o=j*nx;for(let k=-r;k<=r;k++)s+=f[o+Math.max(0,k)];for(let k=0;k<nx;k++){t[o+k]=s/w;s+=f[o+Math.min(nx-1,k+r+1)]-f[o+Math.max(0,k-r)]}}
@@ -327,8 +337,46 @@ g.selectAll('rect').data(p=>VV.map((v,j)=>({p,j,x:p.v[v][S.y]}))).join('rect').a
 /* ---------- panel pengatur: tahun, pulau, provinsi ---------- */
 const dk=$('.dock');dk.innerHTML=`<div class="yr">${Y.map((y,i)=>`<button type="button" data-y="${i}" aria-pressed="false">${y}</button>`).join('')}<button type="button" data-all="1" title="Rata-rata 2021–2025">Semua</button></div><select id="si" aria-label="Pilih pulau"><option value="">Semua pulau</option>${[...new Set(P.map(p=>p.i))].map(i=>`<option>${i}</option>`).join('')}</select><select id="sp" aria-label="Pilih provinsi"></select>`;
 const fillP=()=>{$('#sp').innerHTML='<option value="">Semua provinsi</option>'+P.filter(p=>!S.isl||p.i===S.isl).map(p=>`<option>${p.n}</option>`).join('');$('#sp').value=S.pv};
+
+/* ===== LISA / Moran's I ===== */
+const LZ={H:'#D55E00',L:'#0072B2',HL:'#E69F00',LH:'#56B4E9',n:'#9aa5ad'},LN={H:'Tinggi–Tinggi',L:'Rendah–Rendah',HL:'Tinggi–Rendah (pencilan)',LH:'Rendah–Tinggi (pencilan)',n:'Tidak signifikan'};const LC={};
+function lisaCalc(v,k){const key=v+k+S.y;if(LC[key])return LC[key];const A=K.filter(d=>d[v][S.y]!=null),n=A.length,x=A.map(d=>d[v][S.y]),m=d3.mean(x),z=x.map(a=>a-m),m2=d3.sum(z,a=>a*a)/n;
+const nb=A.map((d,i)=>A.map((e,j)=>[j,Math.hypot((e.lo-d.lo)*Math.cos(d.la*Math.PI/180),e.la-d.la)]).filter(a=>a[0]!==i).sort((a,b)=>a[1]-b[1]).slice(0,k).map(a=>a[0]));
+const lag=z.map((_,i)=>d3.mean(nb[i],j=>z[j])),I=d3.sum(z,(a,i)=>a*lag[i])/d3.sum(z,a=>a*a);let rs=7;const rnd=()=>(rs=(rs*16807)%2147483647)/2147483647;
+let ge=0,P=299;for(let t=0;t<P;t++){const s=z.slice();for(let i=n-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[s[i],s[j]]=[s[j],s[i]]}if(d3.sum(s,(a,i)=>a*d3.mean(nb[i],j=>s[j]))/d3.sum(z,a=>a*a)>=I)ge++}
+const pg=(ge+1)/(P+1),rest=z.map((a,i)=>i);const loc=A.map((d,i)=>{const Ii=z[i]/m2*lag[i];let c=0,R=199;for(let t=0;t<R;t++){let s=0;for(let u=0;u<k;u++){let j=Math.floor(rnd()*(n-1));if(j>=i)j++;s+=z[j]}if(Ii>=0?z[i]/m2*(s/k)>=Ii:z[i]/m2*(s/k)<=Ii)c++}const p=(c+1)/(R+1),q=z[i]>0?(lag[i]>0?'H':'HL'):(lag[i]>0?'LH':'L');return{d,z:z[i],l:lag[i],p,c:p<.05?q:'n'}});
+return LC[key]={I,pg,loc,n,E:-1/(n-1)}}
+let lzT=d3.zoomIdentity,lzB=null;
+function lisaDraw(){const v=$('#lv').value,k=+$('#lk').value,R=lisaCalc(v,k),s=d3.select('#lm').html(''),g=s.append('g'),sh=$('#lh').checked,pr=v==='ipm'?'IPM':'kemiskinan',cnt=d3.rollup(R.loc,a=>a.length,d=>d.c),W=700,H=420;
+const x=d3.scaleLinear([94,141],[20,W-20]),y=d3.scaleLinear([-11.5,6.5],[H-15,15]);
+g.selectAll('circle').data(R.loc.filter(o=>sh||o.c!=='n')).join('circle').attr('cx',o=>x(o.d.lo)).attr('cy',o=>y(o.d.la)).attr('r',o=>o.c==='n'?2.2:3.6).attr('fill',o=>LZ[o.c]).attr('opacity',o=>o.c==='n'?.55:.95).attr('stroke',o=>o.c==='n'?'none':'#fff').attr('stroke-width',.5).on('mousemove',(e,o)=>tip(`<b>${o.d.n}</b>, ${o.d.p}<br>${pr}: ${f1(o.d[v][S.y])}<br>${LN[o.c]} (p=${L.format('.3f')(o.p)})`,e)).on('mouseleave',hide);
+const zm=d3.zoom().scaleExtent([1,12]).on('zoom',e=>{lzT=e.transform;g.attr('transform',lzT);g.selectAll('circle').attr('r',o=>(o.c==='n'?2.2:3.6)/Math.sqrt(lzT.k))});s.call(zm);lzB=()=>s.transition().call(zm.transform,d3.zoomIdentity);
+s.append('text').attr('x',10).attr('y',H-6).attr('fill','var(--mut)').attr('font-size',11).text('Sumber: BPS; batas: BIG');
+const q=d3.select('#ls').html(''),ex=d3.extent(R.loc,o=>o.z),ey=d3.extent(R.loc,o=>o.l),M=Math.max(Math.abs(ex[0]),ex[1],Math.abs(ey[0]),ey[1]),qx=d3.scaleLinear([-M,M],[40,400]),qy=d3.scaleLinear([-M,M],[390,20]);
+q.append('line').attr('x1',qx(0)).attr('x2',qx(0)).attr('y1',20).attr('y2',390).attr('stroke','var(--ln)');q.append('line').attr('y1',qy(0)).attr('y2',qy(0)).attr('x1',40).attr('x2',400).attr('stroke','var(--ln)');
+q.append('line').attr('x1',qx(-M)).attr('y1',qy(-M*R.I)).attr('x2',qx(M)).attr('y2',qy(M*R.I)).attr('stroke','var(--sun)').attr('stroke-width',2);
+q.selectAll('circle').data(R.loc).join('circle').attr('cx',o=>qx(o.z)).attr('cy',o=>qy(o.l)).attr('r',3).attr('fill',o=>LZ[o.c]).attr('opacity',.7).on('mousemove',(e,o)=>tip(`<b>${o.d.n}</b><br>${LN[o.c]}`,e)).on('mouseleave',hide);
+[['H',400,28,'end'],['LH',46,28,'start'],['L',46,384,'start'],['HL',400,384,'end']].forEach(a=>q.append('text').attr('x',a[1]).attr('y',a[2]).attr('text-anchor',a[3]).attr('font-size',11).attr('fill','var(--mut)').text(a[0]==='H'?'Tinggi–Tinggi':a[0]==='L'?'Rendah–Rendah':a[0]==='LH'?'Rendah–Tinggi':'Tinggi–Rendah'));
+$('#ll').innerHTML=Object.keys(LZ).map(c=>`<span><i style="background:${LZ[c]}"></i>${LN[c]}: ${cnt.get(c)||0}</span>`).join('');
+$('#lp').innerHTML=`Moran's I global ${pr} ${YL()} = <b>${L.format('.3f')(R.I)}</b> (harapan acak ${L.format('.4f')(R.E)}; pseudo-p ${L.format('.3f')(R.pg)}; n=${R.n}). ${R.I>0&&R.pg<.05?'Wilayah yang mirip cenderung <b>berkelompok</b>':'Tidak ada pengelompokan spasial yang jelas'}. Peta LISA menunjukkan <b>${cnt.get('H')||0}</b> klaster tinggi–tinggi dan <b>${cnt.get('L')||0}</b> rendah–rendah; pencilan spasial: <b>${(cnt.get('HL')||0)+(cnt.get('LH')||0)}</b>.`}
+/* ===== Teks: TF-IDF, bigram, KWIC ===== */
+const SW=new Set(['kabupaten','kota','dan','di','ke','yang','atas','bawah','kab','utara','selatan','barat','timur','tengah','daya','laut','kepulauan','raya']);
+const tok=n=>n.toLowerCase().split(/[^a-z]+/).filter(w=>w.length>=3&&!SW.has(w));
+function txtDraw(){const sel=$('#kz'),zz=$('#kz').value;if(sel.options.length===1)[...new Set(K.map(d=>d.i))].forEach(i=>sel.add(new Option(i,i)));
+const docs=d3.rollups(K,a=>a.flatMap(d=>tok(d.n)),d=>d.p),N=docs.length,df=new Map();docs.forEach(([,t])=>new Set(t).forEach(w=>df.set(w,(df.get(w)||0)+1)));
+const sc=S.pv?docs.filter(d=>d[0]===S.pv):S.isl?docs.filter(d=>K.find(k=>k.p===d[0]).i===S.isl):docs,tf=new Map();sc.forEach(([,t])=>t.forEach(w=>tf.set(w,(tf.get(w)||0)+1)));
+const tt=[...tf].map(([w,c])=>[w,c*Math.log((N+1)/(df.get(w)+1)+1)]).sort((a,b)=>b[1]-a[1]).slice(0,10),bar=(a,fmt)=>{const mx=a[0][1];return a.map(([w,v])=>`<div class="bar"><span>${w}</span><u style="width:${v/mx*55}%"></u><small>${fmt(v)}</small></div>`).join('')};
+$('#tf').innerHTML=tt.length?bar(tt,v=>L.format('.1f')(v)):'–';
+const bg=new Map();K.filter(inK).forEach(d=>{const t=tok(d.n);for(let i=0;i<t.length-1;i++){const b=t[i]+' '+t[i+1];bg.set(b,(bg.get(b)||0)+1)}});const bb=[...bg].sort((a,b)=>b[1]-a[1]).slice(0,10);$('#bg').innerHTML=bb.length?bar(bb,v=>v):'Tidak ada bigram pada pilihan ini.';
+const q=$('#kq').value.trim().toLowerCase(),A=K.filter(d=>inK(d)&&(!zz||d.i===zz)),hit=q?A.filter(d=>d.n.toLowerCase().includes(q)):[];
+$('#kh').textContent=`KWIC: "${q}" muncul di ${hit.length} dari ${A.length} nama`;const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig');
+$('#kw').innerHTML=hit.length?hit.map(d=>`<div>${d.n.replace(re,'<mark>$1</mark>')} <small>— ${d.p}, IPM ${f1(d.ipm[S.y])}</small></div>`).join(''):'Tidak ditemukan.';
+const pi=d3.rollups(K.filter(d=>inK(d)),a=>100*a.filter(d=>q&&d.n.toLowerCase().includes(q)).length/a.length,d=>d.i),s=d3.select('#kt').html(''),x=d3.scaleBand(pi.map(a=>a[0]),[110,690]).padding(.25),mx=Math.max(1,d3.max(pi,a=>a[1])),y=d3.scaleLinear([0,mx],[130,15]);
+s.selectAll('rect').data(pi).join('rect').attr('x',a=>x(a[0])).attr('y',a=>y(a[1])).attr('width',x.bandwidth()).attr('height',a=>130-y(a[1])).attr('fill','#0072B2').on('mousemove',(e,a)=>tip(`${a[0]}: ${f1(a[1])}% nama`,e)).on('mouseleave',hide);
+s.selectAll('text').data(pi).join('text').attr('x',a=>x(a[0])+x.bandwidth()/2).attr('y',146).attr('text-anchor','middle').attr('font-size',10).attr('fill','var(--mut)').text(a=>a[0]);s.append('text').attr('x',4).attr('y',20).attr('font-size',11).attr('fill','var(--mut)').text('% nama memuat kata');}
+$('#lv').onchange=$('#lk').onchange=$('#lh').onchange=lisaDraw;$('#lr').onclick=()=>lzB&&lzB();$('#kq').oninput=$('#kz').onchange=txtDraw;
 let ready=0;
-function upd(){hp=S.pv?[P.find(p=>p.n===S.pv).i,S.pv]:S.isl?[S.isl]:[];nar();cards();setT();selRise();if(ready)hero();trDraw();pcaDraw();hmDraw();hDraw();dbDraw();nwDraw();wcDraw();flDraw();$$('.yr button').forEach(b=>{const on=b.dataset.all!==undefined?S.ys.size===5:S.ys.has(+b.dataset.y);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})}
+function upd(){hp=S.pv?[P.find(p=>p.n===S.pv).i,S.pv]:S.isl?[S.isl]:[];nar();cards();setT();selRise();if(ready)hero();trDraw();pcaDraw();hmDraw();hDraw();dbDraw();nwDraw();wcDraw();txtDraw();lisaDraw();flDraw();$$('.yr button').forEach(b=>{const on=b.dataset.all!==undefined?S.ys.size===5:S.ys.has(+b.dataset.y);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})}
 dk.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.all!==undefined)S.ys=new Set([0,1,2,3,4]);else{const i=+b.dataset.y;if(S.ys.size===5)S.ys=new Set([i]);else if(S.ys.has(i)){if(S.ys.size>1)S.ys.delete(i)}else S.ys.add(i)}setYears();upd()};
 $('#si').onchange=e=>{S.isl=e.target.value;S.pv='';fillP();upd()};
 $('#sp').onchange=e=>{S.pv=e.target.value;if(S.pv){S.isl=P.find(p=>p.n===S.pv).i;$('#si').value=S.isl}fillP();upd()};
