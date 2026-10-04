@@ -25,6 +25,23 @@ for d in K:
 FIX = {3211: (107.92, -6.86), 5107: (115.6, -8.4), 6211: (113.5, -1.3), 9101: (132.6, -3.0), 9102: (133.8, -3.7), 9103: (134.3, -2.8), 9104: (133.3, -2.2), 9105: (134.1, -0.9), 9111: (134.1, -1.5), 9112: (133.8, -1.3), 9107: (131.5, -1.0), 9106: (132.0, -1.5), 9110: (132.3, -1.4), 9109: (132.5, -0.7), 9403: (140.2, -2.6), 9408: (136.2, -1.8), 9409: (135.9, -1.0), 9419: (138.9, -2.5), 9420: (140.6, -3.3), 9426: (136.7, -2.5), 9427: (135.5, -0.8), 9428: (137.5, -2.5), 9471: (140.7, -2.55), 9401: (140.4, -8.4), 9413: (140.4, -6.1), 9414: (139.4, -7.1), 9415: (138.4, -5.5), 9412: (136.9, -4.6), 9434: (135.6, -4.0), 9436: (136.2, -4.1), 9404: (135.5, -3.4), 9410: (136.4, -3.9), 9435: (136.7, -3.6), 9433: (137.2, -4.0), 9411: (137.8, -3.6), 9508: (138.2, -4.5), 9402: (139.1, -4.0), 9430: (138.4, -4.0), 9418: (138.2, -3.65), 9705: (138.7, -3.4), 9432: (139.4, -3.6), 9416: (139.6, -4.7), 9417: (140.4, -4.7)}
 for d in K:
     if d['k'] in FIX: d['lo'], d['la'] = FIX[d['k']]
+
+# KOREKSI KOORDINAT (lebih akurat): centroid poligon BIG (kabkota_geojson.txt) dipakai bila kode kab/kota cocok; sisanya memakai FIX.
+import re
+G=json.load(open(R/'kabkota_geojson.txt'))
+def cen(g):
+    pgs=[g['coordinates']] if g['type']=='Polygon' else g['coordinates']
+    pts=[p for pg in pgs for p in pg[0]]
+    return sum(p[0] for p in pts)/len(pts), sum(p[1] for p in pts)/len(pts)
+GC={}
+for f in G['features']:
+    kk=f['properties']['KDPKAB']
+    if not f['geometry'] or not kk or '/' in kk: continue
+    GC[int(re.sub(r'\D','',kk))]=cen(f['geometry'])
+nc=0
+for d in K:
+    if d['k'] in GC: d['lo'],d['la']=[round(v,3) for v in GC[d['k']]]; nc+=1
+print(nc,'koordinat dari centroid poligon BIG')
 assert all(d['p'] in names for d in K), 'nama provinsi tidak cocok'
 (R/'data.js').write_text('window.D='+json.dumps({'P':P,'K':K}, ensure_ascii=False, separators=(',',':')), encoding='utf-8')
 print(len(P), 'provinsi,', len(K), 'kab/kota')
