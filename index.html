@@ -67,9 +67,9 @@ footer small{display:block;max-width:44em;opacity:.8;font:400 .85rem/1.5 var(--f
 
 <section class="dk" id="giliran"><div class="w"><span class="kk">Bab 3 · Giliranmu</span><h2>Sekarang, ceritanya milikmu</h2><p class="lead">Panel di bagian bawah layar kini aktif. Pilih <b>tahun</b>, lalu <b>pulau</b> atau <b>provinsi</b> yang ingin kamu dalami; peta, grafik, dan narasi di bawah ikut menyesuaikan.</p><p>Tidak memilih apa pun juga tak apa: kamu akan membaca seluruh Indonesia pada 2025.</p></div></section>
 
-<section class="dk sc2"><div class="stk"><canvas id="map" role="img" aria-label="Peta 3D timbul dengan titik kabupaten/kota berwarna menurut indikator"></canvas><div class="lg" id="lg"></div><p class="src">Sumber: BPS (IPM, kemiskinan, kepadatan penduduk kab/kota). Garis pantai dan batas wilayah adalah perkiraan dari titik koordinat (bukan batas administratif resmi).</p></div>
+<section class="dk sc2"><div class="stk"><canvas id="map" role="img" aria-label="Peta 3D timbul kabupaten/kota berwarna menurut indikator; lingkaran hanya untuk jumlah penduduk miskin"></canvas><div class="lg" id="lg"></div><p class="src">Sumber: BPS (IPM, kemiskinan, kepadatan penduduk kab/kota). Garis pantai dan batas wilayah adalah perkiraan dari titik koordinat (bukan batas administratif resmi).</p></div>
 <div class="steps">
-<article class="st" data-m="ipm"><span class="kk">Bab 4 · Geospasial</span><h2>Satu titik, satu rumah</h2><p data-n="m1"></p></article>
+<article class="st" data-m="ipm"><span class="kk">Bab 4 · Geospasial</span><h2>Satu wilayah, satu rumah</h2><p data-n="m1"></p></article>
 <article class="st" data-m="miskin"><h2>Ketika warna berbalik</h2><p data-n="m2"></p></article>
 <article class="st" data-m="jm"><h2>Angka kecil, orang yang banyak</h2><p data-n="m3"></p></article>
 </div></section>
@@ -115,55 +115,61 @@ function proj(cv,v){const W=cv.clientWidth,H=cv.clientHeight,r=devicePixelRatio|
 let t0=performance.now();
 function hero(now){const p=proj($('#hc'),[94.5,141.5,-11.5,6.5]),t=RM?1:Math.min(1,((now||performance.now())-t0)/2600);K.forEach(d=>{const a=Math.max(0,Math.min(1,(t*1.4-(d.lo-94.5)/47)*6));if(a<=0)return;p.c.globalAlpha=a;p.c.fillStyle=ipmC(d.ipm[S.y]);p.c.beginPath();p.c.arc(p.X(d.lo),p.Y(d.la),Math.max(1.6,p.s*.15),0,7);p.c.fill()});if(t<1)requestAnimationFrame(hero)}
 /* ---------- peta kab/kota ---------- */
-const mc=$('#map'),TILT=.74;let mode='ipm',view,tgt,raf,rz,hv=null,hk=1,pts=[],cells=[],LAND=[],BRD=[],inv=null;
-/* Berkas batas wilayah belum ada, jadi "daratan" diperkirakan dari 514 titik koordinat:
-   (1) gabungan lingkaran lunak di tiap titik, dihaluskan, lalu dikonturkan = garis pantai perkiraan;
-   (2) diagram Voronoi = pembagian kab/kota perkiraan; garis tebal = batas provinsi perkiraan. */
+const mc=$('#map'),TILT=.74;let mode='ipm',view,tgt,raf,rz,hv=null,hk=1,pts=[],cells=[],BRD=[],inv=null,lk='';const LANDS={};
+/* Berkas batas wilayah belum ada, jadi bentuk wilayah diperkirakan dari 514 titik koordinat:
+   daratan = gabungan lingkaran lunak di titik yang DIPILIH pengguna (dihaluskan lalu dikonturkan);
+   pembagian kab/kota = diagram Voronoi; garis tebal = batas provinsi perkiraan. */
 function blur(f,nx,ny,r){const t=new Float32Array(f.length),w=2*r+1;for(let j=0;j<ny;j++){let s=0;const o=j*nx;for(let k=-r;k<=r;k++)s+=f[o+Math.max(0,k)];for(let k=0;k<nx;k++){t[o+k]=s/w;s+=f[o+Math.min(nx-1,k+r+1)]-f[o+Math.max(0,k-r)]}}
 for(let k=0;k<nx;k++){let s=0;for(let j=-r;j<=r;j++)s+=t[Math.max(0,j)*nx+k];for(let j=0;j<ny;j++){f[j*nx+k]=s/w;s+=t[Math.min(ny-1,j+r+1)*nx+k]-t[Math.max(0,j-r)*nx+k]}}}
-function buildGeo(){const dl=d3.Delaunay.from(K,d=>d.lo,d=>d.la),vo=dl.voronoi([88,-14,146,10]),x0=93,y0=-12.5,st=.04,nx=Math.round(49.5/st),ny=Math.round(19.5/st),f=new Float32Array(nx*ny),ek=new Map();
+function buildGeo(){const dl=d3.Delaunay.from(K,d=>d.lo,d=>d.la),vo=dl.voronoi([88,-14,146,10]),ek=new Map();
 cells=K.map((d,i)=>{let nn=Infinity;for(const j of dl.neighbors(i))nn=Math.min(nn,Math.hypot(K[j].lo-d.lo,K[j].la-d.la)||nn);if(!isFinite(nn))nn=.3;
-const Rl=Math.max(.22,Math.min(2.8,nn*1.9)),g=(vo.cellPolygon(i)||[]).slice(0,-1),cx=(d.lo-x0)/st,cy=(d.la-y0)/st,rc=Rl/st;
-for(let j=Math.max(0,Math.floor(cy-rc));j<=Math.min(ny-1,Math.ceil(cy+rc));j++)for(let k=Math.max(0,Math.floor(cx-rc));k<=Math.min(nx-1,Math.ceil(cx+rc));k++){const v=1-Math.hypot(k-cx,j-cy)/rc;if(v>f[j*nx+k])f[j*nx+k]=v}
-g.forEach((a,e)=>{const b=g[(e+1)%g.length],ka=a.map(v=>v.toFixed(4)).join(),kb=b.map(v=>v.toFixed(4)).join(),key=ka<kb?ka+'|'+kb:kb+'|'+ka;if(!ek.has(key))ek.set(key,[]);ek.get(key).push([a,b,d.p])});
-return{d,g,hr:Math.max(.15,Math.min(1.6,nn*1.2))}}).sort((a,b)=>b.d.la-a.d.la);   /* utara dulu, selatan terakhir (depan) */
-BRD=[...ek.values()].filter(v=>v.length===2&&v[0][2]!==v[1][2]).map(v=>[v[0][0],v[0][1]]);
-blur(f,nx,ny,3);blur(f,nx,ny,3);
-LAND=[];d3.contours().size([nx,ny]).thresholds([.36]).smooth(true)(f)[0].coordinates.forEach(pg=>pg.forEach(r=>LAND.push(r.map(([a,b])=>[x0+a*st,y0+b*st]))))}
+const g=(vo.cellPolygon(i)||[]).slice(0,-1);
+g.forEach((a,e)=>{const b=g[(e+1)%g.length],ka=a.map(v=>v.toFixed(4)).join(),kb=b.map(v=>v.toFixed(4)).join(),key=ka<kb?ka+'|'+kb:kb+'|'+ka;if(!ek.has(key))ek.set(key,[]);ek.get(key).push([a,b,d])});
+return{d,g,Rl:Math.max(.22,Math.min(2.2,nn*1.9,d.ar>0?Math.sqrt(d.ar/Math.PI)/111/.6*2:9)),hr:Math.max(.15,Math.min(1.6,nn*1.2))}}).sort((a,b)=>b.d.la-a.d.la);
+BRD=[...ek.values()].filter(v=>v.length===2&&v[0][2].p!==v[1][2].p).map(v=>[v[0][0],v[0][1],v[0][2],v[1][2]])}
 buildGeo();
+/* daratan hanya untuk wilayah yang dipilih (cache per pilihan) */
+function landFor(){const key=S.pv||S.isl||'',hit=LANDS[key];if(hit)return hit;const sel=cells.filter(q=>inK(q.d));if(!sel.length)return LANDS[key]=[];
+const xs=sel.map(q=>q.d.lo),ys=sel.map(q=>q.d.la),pad=3,x0=Math.min(...xs)-pad,x1=Math.max(...xs)+pad,y0=Math.min(...ys)-pad,y1=Math.max(...ys)+pad,st=Math.max(.012,Math.min(.04,Math.max(x1-x0,y1-y0)/700)),nx=Math.ceil((x1-x0)/st),ny=Math.ceil((y1-y0)/st),f=new Float32Array(nx*ny);
+sel.forEach(q=>{const d=q.d,cx=(d.lo-x0)/st,cy=(d.la-y0)/st,rc=q.Rl/st;for(let j=Math.max(0,Math.floor(cy-rc));j<=Math.min(ny-1,Math.ceil(cy+rc));j++)for(let k=Math.max(0,Math.floor(cx-rc));k<=Math.min(nx-1,Math.ceil(cx+rc));k++){const v=1-Math.hypot(k-cx,j-cy)/rc;if(v>f[j*nx+k])f[j*nx+k]=v}});
+const r=Math.max(2,Math.round(.12/st));blur(f,nx,ny,r);blur(f,nx,ny,r);
+const rings=[];d3.contours().size([nx,ny]).thresholds([.36]).smooth(true)(f)[0].coordinates.forEach(pg=>pg.forEach(rg=>rings.push(rg.map(([a,b])=>[x0+a*st,y0+b*st]))));return LANDS[key]=rings}
 function setT(){const a=K.filter(inK),b=[d3.min(a,d=>d.lo),d3.max(a,d=>d.lo),d3.min(a,d=>d.la),d3.max(a,d=>d.la)],px=(b[1]-b[0])*.15+.8,py=(b[3]-b[2])*.15+.8;tgt=[b[0]-px,b[1]+px,b[2]-py,b[3]+py];if(!view||RM)view=tgt.slice();cancelAnimationFrame(raf);(function f(){view=view.map((v,i)=>v+(tgt[i]-v)*.16);if(view.some((v,i)=>Math.abs(v-tgt[i])>.02)){drawMap();raf=requestAnimationFrame(f)}else{view=tgt.slice();drawMap()}})()}
 function rise(){cancelAnimationFrame(rz);if(RM){hk=1;drawMap();return}const t=performance.now();(function f(n){const u=Math.min(1,(n-t)/700);hk=1-(1-u)**3;drawMap();if(u<1)rz=requestAnimationFrame(f)})(t)}
+function selRise(){const k=S.pv+'|'+S.isl;if(k!==lk){lk=k;rise()}}
 function drawMap(){const p=proj(mc,view),c=p.c,L=S.t==='light',ty=l=>p.H/2+(p.Y(l)-p.H/2)*TILT,TT=Math.min(16,Math.max(5,p.s*.5)),T=TT*hk,sq=d3.scaleSqrt([0,450],[0,Math.min(34,p.s*1.1)]).clamp(true),base=Math.min(11,Math.max(2,p.s*.16));
 inv=(x,y)=>[(x-p.X(0))/(p.X(1)-p.X(0)),((y+TT-p.H/2)/TILT+p.H/2-p.Y(0))/(p.Y(1)-p.Y(0))];
-const poly=(q,g)=>{g.forEach((a,i)=>i?q.lineTo(p.X(a[0]),ty(a[1])):q.moveTo(p.X(a[0]),ty(a[1])));q.closePath();return q},lp=new Path2D();LAND.forEach(r=>poly(lp,r));pts=[];
+const poly=(q,g)=>{g.forEach((a,i)=>i?q.lineTo(p.X(a[0]),ty(a[1])):q.moveTo(p.X(a[0]),ty(a[1])));q.closePath();return q},lp=new Path2D();landFor().forEach(r=>poly(lp,r));pts=[];
 /* 1) bayangan jatuh di laut */
 c.save();c.translate(TT*.9*hk+3,TT*.7*hk+3);c.fillStyle=L?'rgba(13,36,56,.32)':'rgba(0,0,0,.45)';c.shadowColor=L?'rgba(13,36,56,.5)':'rgba(0,0,0,.7)';c.shadowBlur=18;c.fill(lp,'evenodd');c.restore();
 /* 2) tebal daratan (dinding samping) */
 c.fillStyle=L?'#7f95a6':'#1b4763';for(let k=0;k<=T;k+=1.5){c.save();c.translate(0,-k);c.fill(lp,'evenodd');c.restore()}
-/* 3) permukaan atas: wilayah berwarna, dipotong garis pantai */
+/* 3) permukaan atas: wilayah terpilih berwarna menurut nilai (choropleth), dipotong garis pantai */
 c.save();c.translate(0,-T);c.clip(lp,'evenodd');
-const mu=L?'#d3dcd8':'#27425a',on3=L?'#c4d0cb':'#35566f',ap=new Path2D(),bp=new Path2D();
-cells.forEach(q=>{const d=q.d,on=inK(d);const col=on?on3:mu;
+const mu=L?'#c4d0cb':'#35566f',sel=cells.filter(q=>inK(q.d)),ap=new Path2D(),bp=new Path2D();c.fillStyle=mu;c.fillRect(-100,-100,p.W+200,p.H+200);
+sel.forEach(q=>{let col=mu;if(mode!=='jm'){const v=mode==='ipm'?q.d.ipm[S.y]:q.d.mk[S.y];col=v==null?'#5d7288':(mode==='ipm'?ipmC(v):pvC(v))}
 c.fillStyle=col;c.fill(poly(new Path2D(),q.g));poly(ap,q.g)});
-const gr=c.createLinearGradient(0,0,p.W,p.H);gr.addColorStop(0,'rgba(255,255,255,.14)');gr.addColorStop(1,'rgba(0,0,0,.16)');c.fillStyle=gr;c.fillRect(0,0,p.W,p.H);
+const gr=c.createLinearGradient(0,0,p.W,p.H);gr.addColorStop(0,'rgba(255,255,255,.14)');gr.addColorStop(1,'rgba(0,0,0,.16)');c.fillStyle=gr;c.fillRect(-100,-100,p.W+200,p.H+200);
 c.lineJoin='round';c.strokeStyle=L?'rgba(255,255,255,.5)':'rgba(255,255,255,.14)';c.lineWidth=.5;c.stroke(ap);
-BRD.forEach(([a,b])=>{bp.moveTo(p.X(a[0]),ty(a[1]));bp.lineTo(p.X(b[0]),ty(b[1]))});c.strokeStyle=L?'rgba(13,36,56,.55)':'rgba(255,255,255,.5)';c.lineWidth=1.2;c.stroke(bp);
+BRD.forEach(([a,b,d1,d2])=>{if(inK(d1)&&inK(d2)){bp.moveTo(p.X(a[0]),ty(a[1]));bp.lineTo(p.X(b[0]),ty(b[1]))}});c.strokeStyle=L?'rgba(13,36,56,.55)':'rgba(255,255,255,.5)';c.lineWidth=1.2;c.stroke(bp);
+if(hv&&mode!=='jm'){const q=cells.find(q=>q.d===hv),hp=poly(new Path2D(),q.g);c.fillStyle='rgba(255,255,255,.25)';c.fill(hp);c.strokeStyle=L?'#0d2438':'#fff';c.lineWidth=2;c.stroke(hp)}
 c.restore();
 c.save();c.translate(0,-T);c.strokeStyle=L?'rgba(255,255,255,.75)':'rgba(255,255,255,.38)';c.lineWidth=1;c.stroke(lp);c.restore();
-/* 4) nilai diplot sebagai lingkaran di atas peta 3D */
-(mode==='jm'?[...cells].sort((a,b)=>(b.d.jm[S.y]||0)-(a.d.jm[S.y]||0)):cells).forEach(q=>{const d=q.d,on=inK(d),x=p.X(d.lo),y=ty(d.la)-T;if(x<-30||y<-30||x>p.W+30||y>p.H+30)return;let col,r=base;
-if(mode==='ipm')col=ipmC(d.ipm[S.y]);else{const v=d.mk[S.y];col=v==null?'#5d7288':pvC(v);if(mode==='jm'){const j=d.jm[S.y];if(j==null)return;r=Math.max(1.5,sq(j));col=L?'#b45309':'#ffc43d'}}
-const sel=on&&(d===hv||d.p===S.pv);
-if(!on){c.globalAlpha=.12;c.fillStyle=col;c.beginPath();c.arc(x,y,r,0,7);c.fill();return}
+/* 4) hanya mode jumlah penduduk miskin: lingkaran proporsional diplot di atas peta */
+if(mode==='jm'){const col=L?'#b45309':'#ffc43d';[...sel].sort((a,b)=>(b.d.jm[S.y]||0)-(a.d.jm[S.y]||0)).forEach(q=>{const d=q.d,j=d.jm[S.y],x=p.X(d.lo),y=ty(d.la)-T;if(j==null||x<-40||y<-40||x>p.W+40||y>p.H+40)return;const r=Math.max(1.5,sq(j)),on=d===hv;
 c.globalAlpha=.3;c.fillStyle='#000';c.beginPath();c.arc(x+r*.2+.5,y+r*.3+.8,r,0,7);c.fill();
-c.globalAlpha=mode==='jm'?.7:.95;c.fillStyle=col;c.beginPath();c.arc(x,y,r,0,7);c.fill();
-c.globalAlpha=1;c.lineWidth=sel?1.8:.6;c.strokeStyle=sel?(L?'#0d2438':'#fff'):(L?'rgba(13,36,56,.5)':'rgba(0,0,0,.5)');c.stroke();pts.push([x,y,r,d])});c.globalAlpha=1}
-mc.addEventListener('pointermove',e=>{const b=mc.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;let h=null,m=1e9;pts.forEach(q=>{const dd=Math.hypot(q[0]-x,q[1]-y);if(dd<q[2]+5&&dd<m){m=dd;h=q[3]}});
-if(h!==hv){hv=h;drawMap()}
+c.globalAlpha=.7;c.fillStyle=col;c.beginPath();c.arc(x,y,r,0,7);c.fill();
+c.globalAlpha=1;c.lineWidth=on?1.8:.6;c.strokeStyle=on?(L?'#0d2438':'#fff'):(L?'rgba(13,36,56,.5)':'rgba(0,0,0,.5)');c.stroke();pts.push([x,y,r,d])});c.globalAlpha=1}}
+function hit(e){const b=mc.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;let h=null,m=1e9;
+if(mode==='jm')pts.forEach(q=>{const dd=Math.hypot(q[0]-x,q[1]-y);if(dd<q[2]+5&&dd<m){m=dd;h=q[3]}});
+else if(inv){const[lo,la]=inv(x,y);let n=null;cells.forEach(q=>{const dd=Math.hypot(q.d.lo-lo,q.d.la-la);if(dd<m){m=dd;n=q}});if(n&&m<n.hr&&inK(n.d))h=n.d}return h}
+mc.addEventListener('pointermove',e=>{const h=hit(e);if(h!==hv){hv=h;drawMap()}
 if(h){const v=h.mk[S.y],j=h.jm[S.y];tip(`<b>${h.n}</b>, ${h.p}<br>IPM ${f1(h.ipm[S.y])}; miskin ${v==null?'–':f1(v)+'%'}<br>${j==null?'':f1(j)+' ribu jiwa miskin; '}${f0(h.kp[S.y])} jiwa/km²`,e)}else hide()});
 mc.addEventListener('pointerleave',()=>{hide();if(hv){hv=null;drawMap()}});
-function legend(){const g=$('#lg');if(mode==='jm'){g.innerHTML='<b style="color:var(--sun)">Ukuran lingkaran = jumlah penduduk miskin</b><div class="cs"><i></i><i></i><i></i></div><span>kecil ke besar (ribu jiwa)</span>';return}
-const[t,sc,a,b]=mode==='ipm'?['IPM',ipmC,45,86]:['Penduduk miskin (%)',pvC,0,40];g.innerHTML=`<b style="color:var(--sun)">${t}</b><div class="gr" style="background:linear-gradient(90deg,${d3.range(0,1.01,.2).map(u=>sc(a+u*(b-a)))})"></div><span>${a}</span><span style="float:right">${b}</span>`}
+/* klik untuk memperdalam: Indonesia -> pulau -> provinsi */
+mc.addEventListener('click',e=>{const h=hit(e);if(!h||S.pv)return;if(!S.isl)S.isl=h.i;else S.pv=h.p;$('#si').value=S.isl;fillP();hv=null;upd()});
+function legend(){const g=$('#lg');if(mode==='jm'){g.innerHTML='<b style="color:var(--sun)">Ukuran lingkaran = jumlah penduduk miskin</b><div class="cs"><i></i><i></i><i></i></div><span>kecil ke besar (ribu jiwa)</span><div style="margin-top:4px;opacity:.8">Klik peta untuk memperdalam</div>';return}
+const[t,sc,a,b]=mode==='ipm'?['IPM',ipmC,45,86]:['Penduduk miskin (%)',pvC,0,40];g.innerHTML=`<b style="color:var(--sun)">${t}</b><div class="gr" style="background:linear-gradient(90deg,${d3.range(0,1.01,.2).map(u=>sc(a+u*(b-a)))})"></div><span>${a}</span><span style="float:right">${b}</span><div style="margin-top:4px;opacity:.8">Klik peta untuk memperdalam</div>`}
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){mode=e.target.dataset.m;$$('.st').forEach(s=>s.classList.toggle('on',s===e.target));legend();rise()}}),{rootMargin:'-55% 0px -35% 0px'});$$('.st').forEach(s=>io.observe(s));
 const ipmD=d3.scaleLinear().domain([45,62,70,77,86]).range(['#4a3f9f','#2f6fa3','#1f9a8a','#6aa82f','#b8a400']).clamp(true);
 
@@ -174,7 +180,7 @@ pro:()=>`Indeks Pembangunan Manusia (IPM) bukan sekadar angka. Ia merangkum tiga
 t1:()=>`${dl(mm(base(),'uhh',S.y)-mm(base(),'uhh',0),'tahun')} Detak demi detak, usia harapan hidup terus memanjang.`,
 t2:()=>{const a=P.filter(inP),h=mm(a,'hls',S.y),r=mm(a,'rls',S.y);return `Anak usia sekolah kini diharapkan belajar hingga ${f1(h)} tahun, tetapi orang dewasa rata-rata baru menamatkan ${f1(r)} tahun. Jarak <b>${f1(h-r)} tahun</b> itulah pekerjaan rumah pendidikan.`},
 t3:()=>{const b=base();return `${dl((mm(b,'pengeluaran',S.y)/mm(b,'pengeluaran',0)-1)*100,'%')} Dompet rata-rata warga ikut menebal, meski tidak merata.`},
-m1:()=>{const a=K.filter(inK),v=d=>d.ipm[S.y],hi=srt(a,v)[0],lo=srt(a,v,0)[0];return `Setiap titik adalah satu kabupaten/kota: ${a.length} titik untuk ${ar()}; makin terang warnanya, makin tinggi IPM-nya. Pada ${Y[S.y]}, rata-rata IPM-nya <b>${f1(d3.mean(a,v))}</b>. Titik paling terang ada di <b>${hi.n}</b> (${f1(v(hi))}), yang paling redup di <b>${lo.n}</b> (${f1(v(lo))}). Selisih ${f1(v(hi)-v(lo))} poin: sama-sama warga Indonesia, beda peluang hidupnya.`},
+m1:()=>{const a=K.filter(inK),v=d=>d.ipm[S.y],hi=srt(a,v)[0],lo=srt(a,v,0)[0];return `Setiap wilayah berwarna adalah satu kabupaten/kota: ${a.length} wilayah untuk ${ar()}; makin terang warnanya, makin tinggi IPM-nya. Pada ${Y[S.y]}, rata-rata IPM-nya <b>${f1(d3.mean(a,v))}</b>. Wilayah paling terang ada di <b>${hi.n}</b> (${f1(v(hi))}), yang paling gelap di <b>${lo.n}</b> (${f1(v(lo))}). Selisih ${f1(v(hi)-v(lo))} poin: sama-sama warga Indonesia, beda peluang hidupnya.`},
 m2:()=>{const a=K.filter(inK).filter(d=>d.mk[S.y]!=null);if(a.length<3)return 'Data kemiskinan wilayah ini belum lengkap pada tahun tersebut (daerah otonom baru). Coba tahun 2024–2025.';const h=a.filter(d=>d.mk[S.y]>=15),r=cor(a.map(d=>d.ipm[S.y]),a.map(d=>d.mk[S.y])),w=srt(a,d=>d.mk[S.y])[0];return `Balik warnanya: kini yang terang adalah kemiskinan. Pada ${Y[S.y]}, <b>${h.length} dari ${a.length}</b> kabupaten/kota di ${ar()} berpenduduk miskin 15% atau lebih; tertinggi <b>${w.n}</b> (${f1(w.mk[S.y])}%). Korelasinya dengan IPM <b>r = ${f1(r)}</b>: wilayah yang redup di peta pertama cenderung menyala di peta ini.`},
 m3:()=>{const a=K.filter(inK).filter(d=>d.jm[S.y]!=null);if(a.length<3)return 'Jumlah penduduk miskin wilayah ini belum lengkap pada tahun tersebut. Coba tahun 2024–2025.';const t=srt(a,d=>d.jm[S.y]).slice(0,3);return `Sekarang ukuran lingkaran adalah jumlah orang miskin, bukan persentasenya. Terbesar di ${ar()}: ${t.map(d=>`<b>${d.n}</b> (${f1(d.jm[S.y])} ribu jiwa, ${f1(d.mk[S.y])}%)`).join(', ')}. Lingkaran besar belum tentu wilayah termiskin; bisa jadi hanya yang paling padat. Karena itu satu cerita butuh dua peta.`},
 p1:()=>{const R=pca(),v=R.ev.map(e=>e.lam/VV.length*100),t=R.ev[0].v.map((x,i)=>[VL[i],x]).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).slice(0,3).map(x=>x[0]);return `IPM hanya satu angka, padahal tiap provinsi punya sepuluh sisi: kesehatan, sekolah, pengeluaran, kemiskinan, pekerjaan, kesenjangan, sanitasi, dan air. Lewat PCA, ${R.X.length} provinsi pada ${Y[S.y]} diringkas menjadi dua sumbu yang memuat <b>${f1(v[0]+v[1])}%</b> informasi (PC1 ${f1(v[0])}%, PC2 ${f1(v[1])}%). Sumbu pertama paling ditentukan oleh <b>${t.join(', ')}</b>. Tarik kotak di plot kiri, dan garis yang sama menyala di plot kanan.`},
@@ -251,7 +257,7 @@ g.selectAll('rect').data(p=>VV.map((v,j)=>({p,j,x:p.v[v][S.y]}))).join('rect').a
 const dk=$('.dock');dk.innerHTML=`<div class="yr">${Y.map((y,i)=>`<button type="button" data-y="${i}">${y}</button>`).join('')}</div><select id="si" aria-label="Pilih pulau"><option value="">Semua pulau</option>${[...new Set(P.map(p=>p.i))].map(i=>`<option>${i}</option>`).join('')}</select><select id="sp" aria-label="Pilih provinsi"></select>`;
 const fillP=()=>{$('#sp').innerHTML='<option value="">Semua provinsi</option>'+P.filter(p=>!S.isl||p.i===S.isl).map(p=>`<option>${p.n}</option>`).join('');$('#sp').value=S.pv};
 let ready=0;
-function upd(){hp=S.pv?[P.find(p=>p.n===S.pv).i,S.pv]:S.isl?[S.isl]:[];nar();cards();setT();if(ready){t0=-9e9;hero()}trDraw();pcaDraw();hmDraw();hDraw();dbDraw();$$('.yr button').forEach(b=>b.classList.toggle('on',+b.dataset.y===S.y))}
+function upd(){hp=S.pv?[P.find(p=>p.n===S.pv).i,S.pv]:S.isl?[S.isl]:[];nar();cards();setT();selRise();if(ready){t0=-9e9;hero()}trDraw();pcaDraw();hmDraw();hDraw();dbDraw();$$('.yr button').forEach(b=>b.classList.toggle('on',+b.dataset.y===S.y))}
 dk.onclick=e=>{const b=e.target.closest('button');if(b){S.y=+b.dataset.y;upd()}};
 $('#si').onchange=e=>{S.isl=e.target.value;S.pv='';fillP();upd()};
 $('#sp').onchange=e=>{S.pv=e.target.value;if(S.pv){S.isl=P.find(p=>p.n===S.pv).i;$('#si').value=S.isl}fillP();upd()};
