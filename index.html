@@ -5,7 +5,7 @@
 <style>
 :root{--f:'Bricolage Grotesque',system-ui,sans-serif;--s:'Source Serif 4',Georgia,serif}
 :root,html[data-t=dark]{--sea:#0a1f33;--pap:#0a1f33;--bg2:#0e2a45;--ink:#e6f0f6;--mut:#9db3c4;--sun:#ffc43d;--ln:#2a4a66;--dock:rgba(10,31,51,.94)}
-html[data-t=light]{--sea:#f3f6f2;--pap:#f3f6f2;--bg2:#e4ece8;--ink:#0d2438;--mut:#4d657d;--sun:#b45309;--ln:var(--ln);--dock:rgba(255,255,255,.95)}
+html[data-t=light]{--sea:#f3f6f2;--pap:#f3f6f2;--bg2:#e4ece8;--ink:#0d2438;--mut:#4d657d;--sun:#b45309;--ln:#c3d2cc;--dock:rgba(255,255,255,.95)}
 *{box-sizing:border-box;margin:0}html{scroll-behavior:smooth}
 body{font:400 1.1rem/1.7 var(--s);background:var(--pap);color:var(--ink);padding-bottom:96px}
 .dk{background:var(--bg2)}b{font-weight:600;color:var(--sun)}
@@ -48,11 +48,17 @@ footer small{display:block;max-width:44em;opacity:.8;font:400 .85rem/1.5 var(--f
 .dock.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
 .kk{display:block;font:600 .8rem var(--f);letter-spacing:.14em;text-transform:uppercase;color:var(--sun);margin-bottom:.8rem}
 .th{position:fixed;top:12px;right:12px;z-index:9;font:600 .8rem var(--f);color:var(--ink);background:var(--dock);border:1px solid var(--ln);border-radius:999px;padding:7px 13px;cursor:pointer;backdrop-filter:blur(8px)}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:1.4rem;position:relative}.jump a{font:600 .8rem var(--f);color:var(--ink);text-decoration:none;border:1px solid var(--ln);border-radius:999px;padding:5px 12px;background:var(--dock)}.jump a:hover{border-color:var(--sun);color:var(--sun)}
+.ctl{display:flex;flex-wrap:wrap;gap:14px;align-items:center;font:500 .95rem var(--f);margin:.4rem 0 1rem}.ctl label{display:flex;gap:10px;align-items:center;cursor:pointer}.ctl input{accent-color:var(--sun)}.ctl input[type=range]{width:min(220px,50vw)}
+.leg{display:flex;flex-wrap:wrap;gap:6px 18px;font:500 .82rem var(--f);margin:.8rem 0 1rem}.leg i{display:inline-block;width:12px;height:12px;border-radius:50%;border:3.5px solid;margin-right:6px;vertical-align:-2px}
+.cap{font:500 .95rem/1.5 var(--f);color:var(--mut);max-width:60em}h3{font:800 1.2rem var(--f);margin:2rem 0 .4rem}
+#nt{max-height:70vh}
 </style></head><body>
 <header class="dk hero"><canvas id="hc" role="img" aria-label="Peta titik 514 kabupaten/kota berwarna menurut IPM"></canvas>
 <div class="ht"><h1>Dari Sabang sampai Merauke, seberapa jauh kita melangkah?</h1>
 <p>514 kabupaten/kota, 38 provinsi, lima tahun. Setiap titik di bawah adalah satu wilayah; warnanya adalah nasibnya hari ini. Ceritanya dibaca lewat tiga bekal hidup.</p>
-<span class="hint">Gulir pelan-pelan. Atur tahun, pulau, dan provinsi di panel bawah kapan saja.</span></div></header>
+<span class="hint">Gulir pelan-pelan. Atur tahun, pulau, dan provinsi di panel bawah kapan saja.</span>
+<nav class="jump" aria-label="Lompat ke bab"><a href="#geo">Geospasial</a><a href="#multi">Multivariat</a><a href="#hier">Hierarkis</a><a href="#net">Jaringan</a><a href="#flow">Aliran</a><a href="#teks">Teks</a></nav></div></header>
 
 <section class="lt"><div class="w"><span class="kk">Bab 1 · Pengenalan</span><h2>Tiga bekal yang menentukan hidup</h2>
 <p class="lead" data-n="pro"></p>
@@ -67,31 +73,52 @@ footer small{display:block;max-width:44em;opacity:.8;font:400 .85rem/1.5 var(--f
 
 <section class="dk" id="giliran"><div class="w"><span class="kk">Bab 3 · Giliranmu</span><h2>Sekarang, ceritanya milikmu</h2><p class="lead">Panel di bagian bawah layar kini aktif. Pilih <b>tahun</b>, lalu <b>pulau</b> atau <b>provinsi</b> yang ingin kamu dalami; peta, grafik, dan narasi di bawah ikut menyesuaikan.</p><p>Tidak memilih apa pun juga tak apa: kamu akan membaca seluruh Indonesia pada 2025.</p></div></section>
 
-<section class="dk sc2"><div class="stk"><canvas id="map" role="img" aria-label="Peta 3D timbul kabupaten/kota berwarna menurut indikator; lingkaran hanya untuk jumlah penduduk miskin"></canvas><div class="lg" id="lg"></div><p class="src">Sumber: BPS (IPM, kemiskinan, kepadatan penduduk kab/kota). Garis pantai dan batas wilayah adalah perkiraan dari titik koordinat (bukan batas administratif resmi).</p></div>
+<section class="dk sc2" id="geo"><div class="stk"><canvas id="map" role="img" aria-label="Peta 3D timbul kabupaten/kota berwarna menurut indikator; lingkaran hanya untuk jumlah penduduk miskin"></canvas><div class="lg" id="lg"></div><p class="src">Sumber: BPS (IPM, kemiskinan, kepadatan penduduk kab/kota). Garis pantai dan batas wilayah adalah perkiraan dari titik koordinat (bukan batas administratif resmi).</p></div>
 <div class="steps">
 <article class="st" data-m="ipm"><span class="kk">Bab 4 · Geospasial</span><h2>Satu wilayah, satu rumah</h2><p data-n="m1"></p></article>
 <article class="st" data-m="miskin"><h2>Ketika warna berbalik</h2><p data-n="m2"></p></article>
 <article class="st" data-m="jm"><h2>Angka kecil, orang yang banyak</h2><p data-n="m3"></p></article>
 </div></section>
 
-<section class="lt"><div class="w"><span class="kk">Bab 5 · Multivariat</span><h2>Sepuluh ukuran, satu potret</h2>
+<section class="lt" id="multi"><div class="w"><span class="kk">Bab 5 · Multivariat</span><h2>Sepuluh ukuran, satu potret</h2>
 <p class="lead" data-n="p1"></p>
 <div class="duo"><figure><svg id="sc" role="img" aria-label="Biplot PCA provinsi"></svg><figcaption id="cap"></figcaption></figure>
 <figure><svg id="pc" role="img" aria-label="Parallel coordinates provinsi"></svg><figcaption>Satu garis = satu provinsi, diwarnai IPM. Skala tiap sumbu dari nilai terendah ke tertinggi (Miskin, TPT, Gini: makin tinggi makin buruk).</figcaption></figure></div>
 <figure><svg id="hm" role="img" aria-label="Heatmap provinsi dan indikator"></svg><figcaption>Heatmap provinsi × indikator (z-score pada tahun terpilih), diurutkan menurut IPM. Oranye = di atas rata-rata, ungu = di bawah rata-rata. Miskin, TPT, dan Gini: makin tinggi makin buruk.</figcaption></figure><p data-n="p2"></p><p class="src">Sumber: BPS (indikator provinsi 2021–2025); olahan PCA penulis</p></div></section>
 
-<section class="dk"><div class="w"><span class="kk">Bab 6 · Hierarkis</span><h2>Menyelam dari Indonesia sampai kabupaten</h2>
+<section class="dk" id="hier"><div class="w"><span class="kk">Bab 6 · Hierarkis</span><h2>Menyelam dari Indonesia sampai kabupaten</h2>
 <p class="lead" data-n="h1"></p><div id="bc"></div>
 <div class="gp"><svg id="tm" viewBox="0 0 760 400" role="img" aria-label="Treemap penduduk dan IPM"></svg><svg id="ic" viewBox="0 0 420 400" role="img" aria-label="Sunburst penduduk dan IPM"></svg></div>
 <p class="src">Luas = jumlah penduduk (kepadatan × luas wilayah). Warna = IPM. Kiri: treemap; kanan: sunburst (klik cincin untuk masuk, klik pusat untuk naik). Sumber: BPS</p></div></section>
 
-<section class="lt"><div class="w"><span class="kk">Bab 7 · Klimaks</span><h2>Jarak yang tak boleh kita biarkan</h2><p class="lead" data-n="end"></p>
+<section class="lt" id="net"><div class="w"><span class="kk">Bab 7 · Jaringan</span><h2>Bersaudara walau beda pulau</h2>
+<p class="lead" data-n="nw"></p>
+<div class="ctl"><label>Hubungkan tiap provinsi ke <b id="nk">3</b> tetangga paling mirip <input id="nrg" type="range" min="1" max="6" value="3" aria-label="Jumlah tetangga terdekat"></label></div>
+<figure><svg id="nt" role="img" aria-label="Jaringan kemiripan profil sosial-ekonomi antarprovinsi"></svg><figcaption id="ncap"></figcaption></figure><div id="nleg" class="leg"></div>
+<p class="src">Sumber: BPS (sepuluh indikator provinsi); jaringan k-tetangga terdekat dan komunitas modularitas dihitung penulis.</p></div></section>
+
+<section class="dk" id="flow"><div class="w"><span class="kk">Bab 8 · Aliran</span><h2>Siapa naik kelas, siapa tertahan</h2>
+<p class="lead" data-n="fl"></p>
+<div class="ctl"><label><input type="checkbox" id="fo"> Sembunyikan yang bertahan di kategori yang sama</label></div>
+<figure><svg id="fl" role="img" aria-label="Diagram alir perpindahan kategori IPM kabupaten/kota 2021 sampai 2025"></svg><figcaption id="fcap"></figcaption></figure>
+<h3>Dua belas lompatan terjauh</h3>
+<figure><svg id="mv" role="img" aria-label="Kabupaten/kota dengan kenaikan IPM terbesar 2021 sampai 2025"></svg><figcaption>Lingkaran kosong = IPM 2021, lingkaran berisi = IPM 2025 (warna menurut IPM). Angka = kenaikan poin. Mengikuti pilihan pulau/provinsi di panel bawah.</figcaption></figure>
+<p class="src">Sumber: BPS (IPM kabupaten/kota 2021–2025); kategori menurut batas BPS.</p></div></section>
+
+<section class="lt" id="teks"><div class="w"><span class="kk">Bab 9 · Teks</span><h2>Apa arti sebuah nama?</h2>
+<p class="lead" data-n="tx"></p>
+<div class="duo"><figure><svg id="tw" role="img" aria-label="Awan kata dari nama kabupaten/kota, diwarnai rata-rata IPM"></svg></figure>
+<figure><svg id="tb" role="img" aria-label="Selisih rata-rata IPM per kata terhadap rata-rata nasional"></svg><figcaption>Batang = selisih rata-rata IPM wilayah ber-kata itu terhadap rata-rata nasional (kata yang muncul ≥5 kali; angka dalam kurung = jumlah nama).</figcaption></figure></div>
+<p id="tcap" class="cap"></p>
+<p class="src">Korpus: 514 nama kabupaten/kota dari data BPS, dipecah per kata. Untuk analisis teks yang lebih kaya (berita, dokumen kebijakan), korpus tambahan bisa dimasukkan dengan cara yang sama.</p></div></section>
+
+<section class="dk"><div class="w"><span class="kk">Bab 10 · Klimaks</span><h2>Jarak yang tak boleh kita biarkan</h2><p class="lead" data-n="end"></p>
 <svg id="db" role="img" aria-label="IPM provinsi pada tahun terpilih"></svg>
 <p class="src">Garis putus-putus = batas kategori BPS: kurang dari 60 rendah, 60–70 sedang, 70–80 tinggi, 80 ke atas sangat tinggi. Sumber: BPS</p></div></section>
 
-<footer class="dk"><div class="w"><span class="kk">Bab 8 · Penutup</span><h2>Angka itu manusia</h2>
+<footer class="lt"><div class="w"><span class="kk">Bab 11 · Penutup</span><h2>Angka itu manusia</h2>
 <p class="lead">Di balik setiap titik ada keluarga yang menunggu puskesmas, sekolah, dan harga beras yang terjangkau. IPM naik bukan karena grafik, melainkan karena banyak orang diberi bekal yang cukup untuk melangkah. Tugas kita membaca peta ini dengan jujur, lalu bertanya: titik mana yang belum ikut bergerak?</p>
-<small>Sumber: BPS — IPM dan komponennya, kemiskinan, TPT, TPAK, Rasio Gini, sanitasi dan air minum layak (provinsi), serta IPM, kemiskinan, kepadatan (kab/kota), 2021–2025. Judul tabel, URL, dan tanggal akses ada di README. Catatan: provinsi baru di Papua umumnya baru bernilai sejak 2023; Rasio Gini 2023 tidak tersedia; kemiskinan sebagian kab/kota baru kosong pada 2021–2023 (abu-abu di peta).</small></div></footer>
+<small>Sumber: BPS — IPM dan komponennya, kemiskinan, TPT, TPAK, Rasio Gini, sanitasi dan air minum layak (provinsi), serta IPM, kemiskinan, kepadatan (kab/kota), 2021–2025. Jaringan dibangun dari kemiripan sepuluh indikator provinsi; diagram alir memakai kategori IPM BPS; analisis teks memakai nama kabupaten/kota. Judul tabel, URL, dan tanggal akses ada di README. Catatan: provinsi baru di Papua umumnya baru bernilai sejak 2023; Rasio Gini 2023 tidak tersedia; kemiskinan sebagian kab/kota baru kosong pada 2021–2023 (abu-abu di peta).</small></div></footer>
 
 <button class="th" id="th" type="button">Tema terang</button><aside class="dock" aria-label="Pengatur cerita"></aside><div id="tip"></div>
 <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script><script>window.d3||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"><\/script>')</script><script src="data.js"></script>
@@ -253,11 +280,114 @@ const g=s.selectAll('g').data(X).join('g').attr('transform',(p,i)=>`translate(0,
 g.append('text').attr('x',l-6).attr('y',rh/2).attr('dy','.34em').attr('text-anchor','end').attr('font-size',10).attr('font-weight',p=>p.n===S.pv?800:400).attr('fill','currentColor').text(p=>p.n);
 g.selectAll('rect').data(p=>VV.map((v,j)=>({p,j,x:p.v[v][S.y]}))).join('rect').attr('x',d=>l+cw*d.j).attr('width',cw-1).attr('height',rh-1).attr('fill',d=>d.x==null?'#7a8b99':col((d.x-st[d.j][0])/st[d.j][1])).on('pointermove',(e,d)=>tip(`<b>${d.p.n}</b><br>${VL[d.j]}: ${d.x==null?'n/a':f1(d.x)}`,e)).on('pointerleave',hide)}
 
+/* =====================================================================
+   TIGA BAB BARU: jaringan (b), aliran (f), teks (d)
+   ===================================================================== */
+const CAT=v=>v<60?0:v<70?1:v<80?2:3,CN=['Rendah','Sedang','Tinggi','Sangat tinggi'],CR=[52,65,75,83],
+CC=['#56b4e9','#e69f00','#cc79a7','#4caf80','#f0e442','#d55e00','#9aa9ff','#c0c0c0'],f2=L.format('.2f'),sg=v=>(v>=0?'+':'−')+f1(Math.abs(v));
+
+/* ---------- Bab 7 · jaringan kemiripan antarprovinsi ---------- */
+let NK=3,nsim=null,nsel=null;
+const popOf=(pn,y)=>d3.sum(K.filter(k=>k.p===pn),k=>(k.kp[y]||0)*(k.ar||0));
+/* komunitas: modularitas serakah (gabungkan pasangan komunitas yang paling menaikkan Q) */
+function comm(n,L){const m=L.length;if(!m)return{c:d3.range(n),q:0};const dg=new Array(n).fill(0);L.forEach(e=>{dg[e.source]++;dg[e.target]++});
+const Q=c=>{let q=0;L.forEach(e=>{if(c[e.source]===c[e.target])q+=1/m});const D={};dg.forEach((d,i)=>D[c[i]]=(D[c[i]]||0)+d);for(const k in D)q-=(D[k]/(2*m))**2;return q};
+let c=d3.range(n),q=Q(c);for(;;){const cn=new Set();L.forEach(e=>{const a=c[e.source],b=c[e.target];if(a!==b)cn.add(a<b?a+'|'+b:b+'|'+a)});let best=null;
+cn.forEach(k=>{const[a,b]=k.split('|').map(Number),c2=c.map(x=>x===b?a:x),q2=Q(c2);if(q2>q+1e-9&&(!best||q2>best.q))best={q:q2,c:c2}});if(!best)break;c=best.c;q=best.q}
+const ord=d3.groups(c,x=>x).sort((a,b)=>b[1].length-a[1].length).map(g=>g[0]);return{c:c.map(x=>ord.indexOf(x)),q}}
+function netDraw(){if(nsim)nsim.stop();const y=S.y,W=760,H=480,X=P.filter(p=>p.v.ipm[y]!=null),vs=VV.filter(v=>X.some(p=>p.v[v][y]!=null)),
+st=vs.map(v=>{const a=X.map(p=>p.v[v][y]).filter(x=>x!=null);return[d3.mean(a),d3.deviation(a)||1]}),
+Z=X.map(p=>vs.map((v,j)=>{const x=p.v[v][y];return x==null?0:(x-st[j][0])/st[j][1]})),
+dist=(a,b)=>Math.sqrt(d3.sum(Z[a],(x,j)=>(x-Z[b][j])**2)/vs.length),E=new Map();
+X.forEach((_,i)=>d3.range(X.length).filter(j=>j!==i).sort((a,b)=>dist(i,a)-dist(i,b)).slice(0,NK).forEach(j=>{const a=Math.min(i,j),b=Math.max(i,j),k=a+'-'+b;if(!E.has(k))E.set(k,{source:a,target:b,d:dist(a,b)})}));
+const L0=[...E.values()],cm=comm(X.length,L0),pm=X.map(p=>popOf(p.n,y)),rs=d3.scaleSqrt([0,d3.max(pm)],[4.5,19]),
+nodes=X.map((p,i)=>({i,p,c:cm.c[i],r:rs(pm[i]),x:W/2+Math.cos(i*2.4)*(60+i*5),y:H/2+Math.sin(i*2.4)*(40+i*3.5)})),
+nb=nodes.map(()=>new Set());L0.forEach(e=>{nb[e.source].add(e.target);nb[e.target].add(e.source);e.cross=X[e.source].i!==X[e.target].i});
+const LL=L0.map(e=>({...e})),cl=()=>nodes.forEach(d=>{d.x=Math.max(d.r+8,Math.min(W-d.r-8,d.x));d.y=Math.max(d.r+16,Math.min(H-d.r-6,d.y))});
+const sim=nsim=d3.forceSimulation(nodes).force('l',d3.forceLink(LL).distance(e=>34+e.d*38).strength(.55)).force('c',d3.forceManyBody().strength(-260)).force('x',d3.forceX(W/2).strength(.06)).force('y',d3.forceY(H/2).strength(.09)).force('o',d3.forceCollide(d=>d.r+11)).stop();
+for(let t=0;t<320;t++){sim.tick();cl()}
+const svg=d3.select('#nt').attr('viewBox',`0 0 ${W} ${H}`).html(''),
+ln=svg.append('g').selectAll('line').data(LL).join('line').attr('stroke',e=>e.cross?'var(--sun)':'currentColor').attr('stroke-opacity',e=>e.cross?.8:.3).attr('stroke-width',e=>e.cross?1.9:1.2),
+nd=svg.append('g').selectAll('g').data(nodes).join('g').style('cursor','grab');
+nd.append('circle').attr('r',d=>d.r).attr('fill',d=>ipmC(d.p.v.ipm[y])).attr('stroke',d=>CC[d.c%CC.length]).attr('stroke-width',3.5);
+nd.append('text').attr('y',d=>-d.r-5).attr('text-anchor','middle').attr('font-size',9.5).attr('fill','currentColor').style('paint-order','stroke').style('stroke','var(--pap)').style('stroke-width','3px').text(d=>d.p.n);
+const pos=()=>{ln.attr('x1',e=>e.source.x).attr('y1',e=>e.source.y).attr('x2',e=>e.target.x).attr('y2',e=>e.target.y);nd.attr('transform',d=>`translate(${d.x},${d.y})`)};pos();
+const rest=()=>{nd.attr('opacity',d=>inP(d.p)?1:.25);nd.select('circle').attr('stroke-width',d=>d.p.n===nsel?6:d.p.n===S.pv?5:3.5);ln.attr('stroke-opacity',e=>e.cross?.8:.3)};rest();
+const top5=d=>d3.range(X.length).filter(j=>j!==d.i).sort((a,b)=>dist(d.i,a)-dist(d.i,b)).slice(0,5);
+const cap=()=>{const d=nodes.find(q=>q.p.n===nsel);$('#ncap').innerHTML=d?`<b>${d.p.n}</b> (IPM ${f1(d.p.v.ipm[y])}) paling mirip dengan: ${top5(d).map(j=>`${X[j].n} (${f1(X[j].v.ipm[y])})`).join(', ')}. Klik lagi untuk melepas pilihan.`:'Ukuran lingkaran = jumlah penduduk, isi = IPM, cincin = komunitas. Garis kuning menghubungkan provinsi dari pulau berbeda. Arahkan kursor untuk menyorot tetangga, klik untuk melihat lima yang paling mirip, seret untuk menggeser.'};cap();
+nd.on('pointerenter',(e,d)=>{nd.attr('opacity',q=>q===d||nb[d.i].has(q.i)?1:.14);ln.attr('stroke-opacity',l=>l.source===d||l.target===d?.95:.04)})
+.on('pointermove',(e,d)=>tip(`<b>${d.p.n}</b><br>IPM ${f1(d.p.v.ipm[y])}; komunitas ${d.c+1}<br>Terhubung: ${[...nb[d.i]].map(j=>X[j].n).join(', ')}`,e))
+.on('pointerleave',()=>{hide();rest()}).on('click',(e,d)=>{nsel=nsel===d.p.n?null:d.p.n;rest();cap()});
+nd.call(d3.drag().on('start',(e,d)=>{if(!e.active)sim.alphaTarget(.25).restart();d.fx=d.x;d.fy=d.y}).on('drag',(e,d)=>{d.fx=e.x;d.fy=e.y}).on('end',(e,d)=>{if(!e.active)sim.alphaTarget(0);d.fx=d.fy=null}));
+sim.on('tick',()=>{cl();pos()});
+const gs=d3.groups(nodes,d=>d.c).sort((a,b)=>a[0]-b[0]).map(([c,m])=>({c,m,ipm:d3.mean(m,d=>d.p.v.ipm[y])})),cr=L0.filter(e=>e.cross).length,hi=[...gs].sort((a,b)=>b.ipm-a.ipm)[0],bg=gs[0];
+$('#nleg').innerHTML=gs.map(g=>`<span><i style="border-color:${CC[g.c%CC.length]}"></i>Komunitas ${g.c+1}: ${g.m.length} provinsi, IPM rata-rata ${f1(g.ipm)}</span>`).join('');
+$('[data-n=nw]').innerHTML=`Dua provinsi dihubungkan bila profil sepuluh indikatornya termasuk ${NK} yang paling mirip (jarak Euclid pada nilai baku, ${Y[y]}). Dari ${X.length} provinsi, algoritma modularitas menemukan <b>${gs.length} komunitas</b> (Q = ${f2(cm.q)}). <b>${f0(cr/L0.length*100)}%</b> dari ${L0.length} garis menyeberangi batas pulau: kemiripan nasib tidak mengenal peta. Komunitas terbesar berisi ${bg.m.length} provinsi, antara lain ${bg.m.slice(0,3).map(d=>d.p.n).join(', ')}; komunitas ber-IPM tertinggi (${f1(hi.ipm)}) memuat ${hi.m.slice(0,3).map(d=>d.p.n).join(', ')}.`}
+$('#nrg').oninput=e=>{NK=+e.target.value;$('#nk').textContent=NK;netDraw()};
+
+/* ---------- Bab 8 · aliran perpindahan kategori IPM ---------- */
+let fOnly=false,fsel=null;
+function flDraw(){const a=K.filter(inK),N=a.length,W=760,H=400,mx=[112,112],nw=16,top=32,gap=12,svg=d3.select('#fl').attr('viewBox',`0 0 ${W} ${H}`).html('');
+if(!N){$('[data-n=fl]').textContent='Tidak ada kabupaten/kota pada pilihan ini.';return}
+const cat=a.map(d=>d.ipm.map(CAT)),k=(H-top-8-3*gap)/N,cx=t=>mx[0]+t*(W-mx[0]-mx[1]-nw)/4,
+cnt=Y.map((_,t)=>d3.range(4).map(c=>d3.sum(cat,r=>r[t]===c?1:0))),ny=cnt.map(col=>{let yy=top;const o=[];for(let c=3;c>=0;c--){o[c]=yy;if(col[c]>0)yy+=col[c]*k+gap}return o}),lk=[];
+for(let t=0;t<4;t++){const M=d3.range(4).map(()=>d3.range(4).map(()=>[]));a.forEach((d,i)=>M[cat[i][t]][cat[i][t+1]].push(d));const out=[0,0,0,0],inn=[0,0,0,0],it=[];
+for(let c1=3;c1>=0;c1--)for(let c2=3;c2>=0;c2--)if(M[c1][c2].length)it.push({t,c1,c2,m:M[c1][c2],key:`${t}-${c1}-${c2}`});
+it.forEach(l=>{l.y0=ny[t][l.c1]+out[l.c1]*k;out[l.c1]+=l.m.length});[...it].sort((p,q)=>q.c2-p.c2||q.c1-p.c1).forEach(l=>{l.y1=ny[t+1][l.c2]+inn[l.c2]*k;inn[l.c2]+=l.m.length});lk.push(...it)}
+const pth=l=>{const x0=cx(l.t)+nw,x1=cx(l.t+1),h=l.m.length*k,xm=(x0+x1)/2;return`M${x0},${l.y0}C${xm},${l.y0} ${xm},${l.y1} ${x1},${l.y1}L${x1},${l.y1+h}C${xm},${l.y1+h} ${xm},${l.y0+h} ${x0},${l.y0+h}Z`},
+col=l=>l.c1===l.c2?'currentColor':l.c2>l.c1?'#3aa6e0':'#e07b39',op=l=>l.c1===l.c2?(fOnly?0:.17):.62,sw=l=>l.key===fsel;
+const lg=svg.append('g').selectAll('path').data(lk).join('path').attr('d',pth).attr('fill',col).attr('fill-opacity',op).attr('stroke',l=>sw(l)?'var(--ink)':'none').attr('stroke-width',1.5).style('cursor','pointer').style('pointer-events',l=>l.c1===l.c2&&fOnly?'none':'all');
+const nm=l=>`${l.c1===l.c2?`bertahan di <b>${CN[l.c1]}</b>`:`<b>${CN[l.c1]}</b> → <b>${CN[l.c2]}</b>`} (${Y[l.t]}→${Y[l.t+1]})`;
+lg.on('pointermove',(e,l)=>{lg.attr('fill-opacity',q=>q===l?Math.min(1,op(q)+.3):op(q));tip(`${l.m.length} wilayah ${nm(l)}`,e)}).on('pointerleave',()=>{hide();lg.attr('fill-opacity',op)})
+.on('click',(e,l)=>{fsel=fsel===l.key?null:l.key;flDraw()});
+Y.forEach((y,t)=>{svg.append('text').attr('x',cx(t)+nw/2).attr('y',16).attr('text-anchor','middle').attr('font-size',12).attr('font-weight',800).attr('fill','currentColor').text(y);
+for(let c=0;c<4;c++)if(cnt[t][c]){svg.append('rect').attr('x',cx(t)).attr('y',ny[t][c]).attr('width',nw).attr('height',cnt[t][c]*k).attr('rx',2).attr('fill',ipmC(CR[c])).on('pointermove',e=>tip(`<b>${CN[c]}</b>, ${y}: ${cnt[t][c]} wilayah`,e)).on('pointerleave',hide);
+if(t===0||t===4){const mid=ny[t][c]+cnt[t][c]*k/2;svg.append('text').attr('x',t?cx(t)+nw+8:cx(t)-8).attr('y',mid).attr('dy','.35em').attr('text-anchor',t?'start':'end').attr('font-size',11).attr('fill','currentColor').text(`${CN[c]} · ${cnt[t][c]}`)}}});
+const sl=lk.find(l=>l.key===fsel);$('#fcap').innerHTML=sl?`${sl.m.length} wilayah ${nm(sl)}: ${sl.m.slice(0,14).map(d=>d.n).join(', ')}${sl.m.length>14?', …':''}. Klik lagi untuk melepas.`:'Tebal pita = jumlah kabupaten/kota. Biru = naik kategori, oranye = turun, abu-abu = bertahan. Klik pita untuk melihat nama wilayahnya.';
+/* ringkasan 2021 -> 2025 */
+const up=cat.filter(r=>r[4]>r[0]).length,dn=cat.filter(r=>r[4]<r[0]).length,pr=d3.rollups(a.filter((d,i)=>cat[i][0]!==cat[i][4]),v=>v.length,d=>CAT(d.ipm[0])+'>'+CAT(d.ipm[4])).sort((p,q)=>q[1]-p[1])[0],
+mv=srt(a,d=>d.ipm[4]-d.ipm[0]).slice(0,12);
+$('[data-n=fl]').innerHTML=`Mari ikuti ${N} kabupaten/kota di ${ar()} dari 2021 ke 2025. Kategori BPS: rendah (&lt;60), sedang (60–70), tinggi (70–80), sangat tinggi (80+). Hasilnya: <b>${up}</b> naik kategori, <b>${dn}</b> turun, <b>${N-up-dn}</b> bertahan. ${pr?`Jalur terpadat adalah <b>${CN[+pr[0][0]]} → ${CN[+pr[0][2]]}</b> (${pr[1]} wilayah). `:''}${cnt[0][0]+cnt[4][0]?`Kelompok “rendah” berubah dari ${cnt[0][0]} menjadi ${cnt[4][0]} wilayah, sedangkan `:'Tidak ada wilayah berkategori “rendah” di pilihan ini, sedangkan '}“sangat tinggi” berubah dari ${cnt[0][3]} menjadi ${cnt[4][3]}.`;
+/* dumbbell: pelompat tertinggi */
+const w=760,rh=22,l=200,h=mv.length*rh+44,sv=d3.select('#mv').attr('viewBox',`0 0 ${w} ${h}`).html('');
+if(mv.length){const x=d3.scaleLinear([d3.min(mv,d=>d.ipm[0])-1.5,d3.max(mv,d=>d.ipm[4])+1.5],[l,w-70]);
+sv.append('g').attr('transform',`translate(0,${h-26})`).call(d3.axisBottom(x).ticks(6));
+const g=sv.selectAll('g.r').data(mv).join('g').attr('class','r').attr('transform',(d,i)=>`translate(0,${i*rh+14})`).on('pointermove',(e,d)=>tip(`<b>${d.n}</b>, ${d.p}<br>IPM ${f1(d.ipm[0])} → ${f1(d.ipm[4])} (${sg(d.ipm[4]-d.ipm[0])})`,e)).on('pointerleave',hide);
+g.append('text').attr('x',l-10).attr('dy','.35em').attr('text-anchor','end').attr('font-size',11).attr('fill','currentColor').text(d=>d.n.length>26?d.n.slice(0,25)+'…':d.n);
+g.append('line').attr('x1',d=>x(d.ipm[0])).attr('x2',d=>x(d.ipm[4])).attr('stroke','currentColor').attr('stroke-opacity',.45).attr('stroke-width',2.5);
+g.append('circle').attr('cx',d=>x(d.ipm[0])).attr('r',5).attr('fill','var(--pap)').attr('stroke','currentColor').attr('stroke-width',1.6);
+g.append('circle').attr('cx',d=>x(d.ipm[4])).attr('r',6.5).attr('fill',d=>ipmC(d.ipm[4])).attr('stroke','currentColor').attr('stroke-width',.8);
+g.append('text').attr('x',d=>x(d.ipm[4])+12).attr('dy','.35em').attr('font-size',11).attr('font-weight',800).attr('fill','var(--sun)').text(d=>sg(d.ipm[4]-d.ipm[0]))}}
+$('#fo').onchange=e=>{fOnly=e.target.checked;flDraw()};
+
+/* ---------- Bab 9 · teks: kata dalam nama wilayah ---------- */
+let tsel=null;
+function txDraw(){const y=S.y,W=760,H=430,tk=new Map();K.forEach(d=>new Set(d.n.split(/\s+/)).forEach(t=>{if(!tk.has(t))tk.set(t,[]);tk.get(t).push(d)}));
+const gm=d3.mean(K,d=>d.ipm[y]),all=[...tk].map(([w,a])=>({w,a,n:a.length,m:d3.mean(a,d=>d.ipm[y])})),WD=all.filter(o=>o.n>=2).sort((a,b)=>b.n-a.n||a.w.localeCompare(b.w)).slice(0,90),
+fs=d3.scaleSqrt([2,WD[0].n],[13,86]),rc=[];
+WD.forEach(o=>{o.fs=fs(o.n);const tw=o.w.length*o.fs*.6+10,th=o.fs*1.12;o.ok=false;for(let t=0;t<460&&!o.ok;t+=.09){const r=2.2*t,x=W/2+r*Math.cos(t)*1.5-tw/2,yy=H/2+r*Math.sin(t)-th/2;if(x<4||yy<4||x+tw>W-4||yy+th>H-4)continue;
+if(rc.every(q=>x+tw<q[0]||x>q[0]+q[2]||yy+th<q[1]||yy>q[1]+q[3])){rc.push([x,yy,tw,th]);o.x=x+5;o.y=yy+th*.8;o.ok=true}}});
+const area=o=>(!S.isl&&!S.pv)||o.a.some(inK),dim=o=>(tsel&&o.w!==tsel)?.2:area(o)?1:.3,
+tp=(e,o)=>tip(`<b>${o.w}</b>: ${o.n} nama wilayah<br>IPM rata-rata ${f1(o.m)} (${sg(o.m-gm)} dari nasional)`,e),pick=(e,o)=>{tsel=tsel===o.w?null:o.w;txDraw()};
+const s1=d3.select('#tw').attr('viewBox',`0 0 ${W} ${H}`).html('');
+s1.selectAll('text').data(WD.filter(o=>o.ok)).join('text').attr('x',d=>d.x).attr('y',d=>d.y).attr('font-size',d=>d.fs).attr('font-weight',800).attr('fill',d=>ipmC(d.m)).attr('opacity',dim).style('cursor','pointer').style('text-decoration',d=>d.w===tsel?'underline':null).text(d=>d.w).on('pointermove',tp).on('pointerleave',hide).on('click',pick);
+const B=all.filter(o=>o.n>=5).sort((a,b)=>b.m-a.m),bw=560,rh=24,bl=150,bh=B.length*rh+44,ex=Math.max(1,d3.max(B,o=>Math.abs(o.m-gm)))+.6,bx=d3.scaleLinear([-ex,ex],[bl+44,bw-46]),
+s2=d3.select('#tb').attr('viewBox',`0 0 ${bw} ${bh}`).html('');
+s2.append('g').attr('transform',`translate(0,${bh-28})`).call(d3.axisBottom(bx).ticks(6).tickFormat(v=>v===0?'0':sg(v)));
+s2.append('line').attr('x1',bx(0)).attr('x2',bx(0)).attr('y1',6).attr('y2',bh-28).attr('stroke','currentColor').attr('opacity',.6);
+const bg=s2.selectAll('g.r').data(B).join('g').attr('class','r').attr('transform',(o,i)=>`translate(0,${i*rh+10})`).attr('opacity',dim).style('cursor','pointer').on('pointermove',tp).on('pointerleave',hide).on('click',pick);
+bg.append('text').attr('x',bl-8).attr('y',rh/2-2).attr('dy','.32em').attr('text-anchor','end').attr('font-size',11).attr('font-weight',o=>o.w===tsel?800:500).attr('fill','currentColor').text(o=>`${o.w} (${o.n})`);
+bg.append('rect').attr('x',o=>Math.min(bx(0),bx(o.m-gm))).attr('width',o=>Math.abs(bx(o.m-gm)-bx(0))).attr('height',rh-6).attr('rx',2).attr('fill',o=>ipmC(o.m)).attr('stroke',o=>o.w===tsel?'var(--ink)':'none').attr('stroke-width',2);
+bg.append('text').attr('x',o=>o.m>=gm?bx(o.m-gm)+5:bx(o.m-gm)-5).attr('y',rh/2-2).attr('dy','.32em').attr('text-anchor',o=>o.m>=gm?'start':'end').attr('font-size',10).attr('fill','currentColor').text(o=>sg(o.m-gm));
+const so=all.find(o=>o.w===tsel);$('#tcap').innerHTML=so?`<b>${so.w}</b> ada di ${so.n} nama wilayah; IPM rata-rata ${f1(so.m)} (${sg(so.m-gm)} dari rata-rata nasional ${f1(gm)}). Contoh: ${so.a.slice(0,8).map(d=>d.n).join(', ')}${so.n>8?', …':''}. Klik lagi untuk melepas.`:'Ukuran kata = jumlah nama wilayah yang memuatnya; warna = rata-rata IPM wilayah-wilayah itu. Klik kata atau batang untuk melihat daftarnya.';
+const ko=tk.get('Kota'),ks=new Set(ko.map(d=>d.n)),kn=K.filter(d=>!ks.has(d.n)),dk_=d3.mean(ko,d=>d.ipm[y])-d3.mean(kn,d=>d.ipm[y]),h1=B[0],l1=B[B.length-1];
+$('[data-n=tx]').innerHTML=`Teks di dataset ini ialah nama wilayah. ${K.length} nama dipecah menjadi ${tk.size} kata unik; ${all.filter(o=>o.n>=2).length} di antaranya muncul lebih dari sekali. Kata <b>“Kota”</b> paling sering (${ko.length}×), dan wilayah ber-“Kota” rata-rata ber-IPM <b>${sg(dk_)} poin</b> dibanding kabupaten pada ${Y[y]}. Di antara kata yang muncul minimal lima kali, rata-rata IPM tertinggi menempel pada <b>“${h1.w}”</b> (${f1(h1.m)}) dan terendah pada <b>“${l1.w}”</b> (${f1(l1.m)}). Hati-hati: kata bukan penyebab. Ia hanya penanda jenis wilayah, misalnya kota perkotaan, wilayah kepulauan, atau daerah pemekaran.`}
+
 /* ---------- panel pengatur: tahun, pulau, provinsi ---------- */
 const dk=$('.dock');dk.innerHTML=`<div class="yr">${Y.map((y,i)=>`<button type="button" data-y="${i}">${y}</button>`).join('')}</div><select id="si" aria-label="Pilih pulau"><option value="">Semua pulau</option>${[...new Set(P.map(p=>p.i))].map(i=>`<option>${i}</option>`).join('')}</select><select id="sp" aria-label="Pilih provinsi"></select>`;
 const fillP=()=>{$('#sp').innerHTML='<option value="">Semua provinsi</option>'+P.filter(p=>!S.isl||p.i===S.isl).map(p=>`<option>${p.n}</option>`).join('');$('#sp').value=S.pv};
 let ready=0;
-function upd(){hp=S.pv?[P.find(p=>p.n===S.pv).i,S.pv]:S.isl?[S.isl]:[];nar();cards();setT();selRise();if(ready){t0=-9e9;hero()}trDraw();pcaDraw();hmDraw();hDraw();dbDraw();$$('.yr button').forEach(b=>b.classList.toggle('on',+b.dataset.y===S.y))}
+function upd(){hp=S.pv?[P.find(p=>p.n===S.pv).i,S.pv]:S.isl?[S.isl]:[];nar();cards();setT();selRise();if(ready){t0=-9e9;hero()}trDraw();pcaDraw();hmDraw();hDraw();dbDraw();netDraw();flDraw();txDraw();$$('.yr button').forEach(b=>b.classList.toggle('on',+b.dataset.y===S.y))}
 dk.onclick=e=>{const b=e.target.closest('button');if(b){S.y=+b.dataset.y;upd()}};
 $('#si').onchange=e=>{S.isl=e.target.value;S.pv='';fillP();upd()};
 $('#sp').onchange=e=>{S.pv=e.target.value;if(S.pv){S.isl=P.find(p=>p.n===S.pv).i;$('#si').value=S.isl}fillP();upd()};
