@@ -29,7 +29,7 @@ p{max-width:36em;margin-bottom:1em}.lead{font-size:1.3rem}
 .stk{position:sticky;top:0;height:100svh}.stk canvas{width:100%;height:100%;display:block}
 .steps{padding:0 24px 22vh}.st{min-height:85vh;display:flex;flex-direction:column;justify-content:center;opacity:.28;transition:opacity .4s}.st.on{opacity:1}
 .lg{position:absolute;left:16px;bottom:92px;width:210px;font:500 .78rem var(--f);background:var(--dock);padding:8px 10px;border-radius:8px}
-.gr{height:10px;border-radius:5px;margin:5px 0}.cs i{display:inline-block;background:var(--sun);border-radius:2px;margin-right:6px;width:9px;height:8px;vertical-align:bottom}.cs i+i{height:16px}.cs i+i+i{height:28px}
+.gr{height:10px;border-radius:5px;margin:5px 0}.cs i{display:inline-block;background:var(--sun);border-radius:50%;margin-right:6px;width:6px;height:6px}.cs i+i{width:14px;height:14px}.cs i+i+i{width:26px;height:26px}
 .src{font:500 .75rem var(--f);opacity:.75;margin:6px 0 0}.stk .src{position:absolute;left:16px;top:14px;margin:0}
 .duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:24px;margin:1.5rem 0}
 svg{width:100%;height:auto;display:block}.domain,.tick line{stroke:currentColor;opacity:.35}svg text{font-family:var(--f)}
@@ -67,9 +67,9 @@ footer small{display:block;max-width:44em;opacity:.8;font:400 .85rem/1.5 var(--f
 
 <section class="dk" id="giliran"><div class="w"><span class="kk">Bab 3 · Giliranmu</span><h2>Sekarang, ceritanya milikmu</h2><p class="lead">Panel di bagian bawah layar kini aktif. Pilih <b>tahun</b>, lalu <b>pulau</b> atau <b>provinsi</b> yang ingin kamu dalami; peta, grafik, dan narasi di bawah ikut menyesuaikan.</p><p>Tidak memilih apa pun juga tak apa: kamu akan membaca seluruh Indonesia pada 2025.</p></div></section>
 
-<section class="dk sc2"><div class="stk"><canvas id="map" role="img" aria-label="Peta 3D timbul kabupaten/kota berwarna menurut indikator"></canvas><div class="lg" id="lg"></div><p class="src">Sumber: BPS (IPM, kemiskinan, kepadatan penduduk kab/kota). Garis pantai dan batas wilayah adalah perkiraan dari titik koordinat (bukan batas administratif resmi).</p></div>
+<section class="dk sc2"><div class="stk"><canvas id="map" role="img" aria-label="Peta 3D timbul dengan titik kabupaten/kota berwarna menurut indikator"></canvas><div class="lg" id="lg"></div><p class="src">Sumber: BPS (IPM, kemiskinan, kepadatan penduduk kab/kota). Garis pantai dan batas wilayah adalah perkiraan dari titik koordinat (bukan batas administratif resmi).</p></div>
 <div class="steps">
-<article class="st" data-m="ipm"><span class="kk">Bab 4 · Geospasial</span><h2>Satu wilayah, satu rumah</h2><p data-n="m1"></p></article>
+<article class="st" data-m="ipm"><span class="kk">Bab 4 · Geospasial</span><h2>Satu titik, satu rumah</h2><p data-n="m1"></p></article>
 <article class="st" data-m="miskin"><h2>Ketika warna berbalik</h2><p data-n="m2"></p></article>
 <article class="st" data-m="jm"><h2>Angka kecil, orang yang banyak</h2><p data-n="m3"></p></article>
 </div></section>
@@ -133,7 +133,7 @@ LAND=[];d3.contours().size([nx,ny]).thresholds([.36]).smooth(true)(f)[0].coordin
 buildGeo();
 function setT(){const a=K.filter(inK),b=[d3.min(a,d=>d.lo),d3.max(a,d=>d.lo),d3.min(a,d=>d.la),d3.max(a,d=>d.la)],px=(b[1]-b[0])*.15+.8,py=(b[3]-b[2])*.15+.8;tgt=[b[0]-px,b[1]+px,b[2]-py,b[3]+py];if(!view||RM)view=tgt.slice();cancelAnimationFrame(raf);(function f(){view=view.map((v,i)=>v+(tgt[i]-v)*.16);if(view.some((v,i)=>Math.abs(v-tgt[i])>.02)){drawMap();raf=requestAnimationFrame(f)}else{view=tgt.slice();drawMap()}})()}
 function rise(){cancelAnimationFrame(rz);if(RM){hk=1;drawMap();return}const t=performance.now();(function f(n){const u=Math.min(1,(n-t)/700);hk=1-(1-u)**3;drawMap();if(u<1)rz=requestAnimationFrame(f)})(t)}
-function drawMap(){const p=proj(mc,view),c=p.c,L=S.t==='light',ty=l=>p.H/2+(p.Y(l)-p.H/2)*TILT,TT=Math.min(16,Math.max(5,p.s*.5)),T=TT*hk,mh=Math.min(70,Math.max(18,p.s*2.2)),sq=d3.scaleSqrt([0,450],[3,mh]).clamp(true);
+function drawMap(){const p=proj(mc,view),c=p.c,L=S.t==='light',ty=l=>p.H/2+(p.Y(l)-p.H/2)*TILT,TT=Math.min(16,Math.max(5,p.s*.5)),T=TT*hk,sq=d3.scaleSqrt([0,450],[0,Math.min(34,p.s*1.1)]).clamp(true),base=Math.min(11,Math.max(2,p.s*.16));
 inv=(x,y)=>[(x-p.X(0))/(p.X(1)-p.X(0)),((y+TT-p.H/2)/TILT+p.H/2-p.Y(0))/(p.Y(1)-p.Y(0))];
 const poly=(q,g)=>{g.forEach((a,i)=>i?q.lineTo(p.X(a[0]),ty(a[1])):q.moveTo(p.X(a[0]),ty(a[1])));q.closePath();return q},lp=new Path2D();LAND.forEach(r=>poly(lp,r));pts=[];
 /* 1) bayangan jatuh di laut */
@@ -143,27 +143,26 @@ c.fillStyle=L?'#7f95a6':'#1b4763';for(let k=0;k<=T;k+=1.5){c.save();c.translate(
 /* 3) permukaan atas: wilayah berwarna, dipotong garis pantai */
 c.save();c.translate(0,-T);c.clip(lp,'evenodd');
 const mu=L?'#d3dcd8':'#27425a',on3=L?'#c4d0cb':'#35566f',ap=new Path2D(),bp=new Path2D();
-cells.forEach(q=>{const d=q.d,on=inK(d);let col=mu;if(mode==='jm')col=on?on3:mu;else if(on){const v=mode==='ipm'?d.ipm[S.y]:d.mk[S.y];col=v==null?'#5d7288':(mode==='ipm'?ipmC(v):pvC(v))}
+cells.forEach(q=>{const d=q.d,on=inK(d);const col=on?on3:mu;
 c.fillStyle=col;c.fill(poly(new Path2D(),q.g));poly(ap,q.g)});
 const gr=c.createLinearGradient(0,0,p.W,p.H);gr.addColorStop(0,'rgba(255,255,255,.14)');gr.addColorStop(1,'rgba(0,0,0,.16)');c.fillStyle=gr;c.fillRect(0,0,p.W,p.H);
 c.lineJoin='round';c.strokeStyle=L?'rgba(255,255,255,.5)':'rgba(255,255,255,.14)';c.lineWidth=.5;c.stroke(ap);
 BRD.forEach(([a,b])=>{bp.moveTo(p.X(a[0]),ty(a[1]));bp.lineTo(p.X(b[0]),ty(b[1]))});c.strokeStyle=L?'rgba(13,36,56,.55)':'rgba(255,255,255,.5)';c.lineWidth=1.2;c.stroke(bp);
-if(hv&&mode!=='jm'){const q=cells.find(q=>q.d===hv),hp=poly(new Path2D(),q.g);c.fillStyle='rgba(255,255,255,.25)';c.fill(hp);c.strokeStyle=L?'#0d2438':'#fff';c.lineWidth=2;c.stroke(hp)}
 c.restore();
 c.save();c.translate(0,-T);c.strokeStyle=L?'rgba(255,255,255,.75)':'rgba(255,255,255,.38)';c.lineWidth=1;c.stroke(lp);c.restore();
-/* 4) mode jumlah penduduk miskin: tiang berdiri di atas peta */
-if(mode==='jm'){const r=Math.max(1.6,Math.min(5,p.s*.2)),col=L?'#b45309':'#ffc43d',dk=d3.color(col).darker(.9).formatHex(),lt=d3.color(col).brighter(.5).formatHex();
-cells.forEach(q=>{const d=q.d,j=d.jm[S.y];if(!inK(d)||j==null)return;const x=p.X(d.lo),y=ty(d.la)-T,h=sq(j)*hk;if(x<-20||x>p.W+20||y<-90||y>p.H+20)return;
-c.strokeStyle='rgba(0,0,0,.3)';c.lineWidth=r*1.5;c.lineCap='round';c.beginPath();c.moveTo(x,y);c.lineTo(x+h*.45,y+h*.2);c.stroke();
-c.fillStyle=dk;c.beginPath();c.ellipse(x,y,r,r*TILT,0,0,7);c.fill();c.fillRect(x-r,y-h,2*r,h);c.fillStyle=col;c.fillRect(x-r,y-h,r*.9,h);
-c.fillStyle=d===hv?'#fff':lt;c.beginPath();c.ellipse(x,y-h,r,r*TILT,0,0,7);c.fill();pts.push({d,x,y,h,r})})}}
-mc.addEventListener('pointermove',e=>{const b=mc.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;let h=null;
-if(mode==='jm'){for(let i=pts.length-1;i>=0&&!h;i--){const q=pts[i];if(Math.abs(x-q.x)<=q.r+3&&y>=q.y-q.h-q.r-3&&y<=q.y+q.r+3)h=q.d}}
-else if(inv){const[lo,la]=inv(x,y);let m=1e9,n=null;cells.forEach(q=>{const dd=Math.hypot(q.d.lo-lo,q.d.la-la);if(dd<m){m=dd;n=q}});if(n&&m<n.hr&&inK(n.d))h=n.d}
+/* 4) nilai diplot sebagai lingkaran di atas peta 3D */
+(mode==='jm'?[...cells].sort((a,b)=>(b.d.jm[S.y]||0)-(a.d.jm[S.y]||0)):cells).forEach(q=>{const d=q.d,on=inK(d),x=p.X(d.lo),y=ty(d.la)-T;if(x<-30||y<-30||x>p.W+30||y>p.H+30)return;let col,r=base;
+if(mode==='ipm')col=ipmC(d.ipm[S.y]);else{const v=d.mk[S.y];col=v==null?'#5d7288':pvC(v);if(mode==='jm'){const j=d.jm[S.y];if(j==null)return;r=Math.max(1.5,sq(j));col=L?'#b45309':'#ffc43d'}}
+const sel=on&&(d===hv||d.p===S.pv);
+if(!on){c.globalAlpha=.12;c.fillStyle=col;c.beginPath();c.arc(x,y,r,0,7);c.fill();return}
+c.globalAlpha=.3;c.fillStyle='#000';c.beginPath();c.arc(x+r*.2+.5,y+r*.3+.8,r,0,7);c.fill();
+c.globalAlpha=mode==='jm'?.7:.95;c.fillStyle=col;c.beginPath();c.arc(x,y,r,0,7);c.fill();
+c.globalAlpha=1;c.lineWidth=sel?1.8:.6;c.strokeStyle=sel?(L?'#0d2438':'#fff'):(L?'rgba(13,36,56,.5)':'rgba(0,0,0,.5)');c.stroke();pts.push([x,y,r,d])});c.globalAlpha=1}
+mc.addEventListener('pointermove',e=>{const b=mc.getBoundingClientRect(),x=e.clientX-b.left,y=e.clientY-b.top;let h=null,m=1e9;pts.forEach(q=>{const dd=Math.hypot(q[0]-x,q[1]-y);if(dd<q[2]+5&&dd<m){m=dd;h=q[3]}});
 if(h!==hv){hv=h;drawMap()}
 if(h){const v=h.mk[S.y],j=h.jm[S.y];tip(`<b>${h.n}</b>, ${h.p}<br>IPM ${f1(h.ipm[S.y])}; miskin ${v==null?'–':f1(v)+'%'}<br>${j==null?'':f1(j)+' ribu jiwa miskin; '}${f0(h.kp[S.y])} jiwa/km²`,e)}else hide()});
 mc.addEventListener('pointerleave',()=>{hide();if(hv){hv=null;drawMap()}});
-function legend(){const g=$('#lg');if(mode==='jm'){g.innerHTML='<b style="color:var(--sun)">Tinggi balok = jumlah penduduk miskin</b><div class="cs"><i></i><i></i><i></i></div><span>sedikit ke banyak (ribu jiwa)</span>';return}
+function legend(){const g=$('#lg');if(mode==='jm'){g.innerHTML='<b style="color:var(--sun)">Ukuran lingkaran = jumlah penduduk miskin</b><div class="cs"><i></i><i></i><i></i></div><span>kecil ke besar (ribu jiwa)</span>';return}
 const[t,sc,a,b]=mode==='ipm'?['IPM',ipmC,45,86]:['Penduduk miskin (%)',pvC,0,40];g.innerHTML=`<b style="color:var(--sun)">${t}</b><div class="gr" style="background:linear-gradient(90deg,${d3.range(0,1.01,.2).map(u=>sc(a+u*(b-a)))})"></div><span>${a}</span><span style="float:right">${b}</span>`}
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){mode=e.target.dataset.m;$$('.st').forEach(s=>s.classList.toggle('on',s===e.target));legend();rise()}}),{rootMargin:'-55% 0px -35% 0px'});$$('.st').forEach(s=>io.observe(s));
 const ipmD=d3.scaleLinear().domain([45,62,70,77,86]).range(['#4a3f9f','#2f6fa3','#1f9a8a','#6aa82f','#b8a400']).clamp(true);
@@ -175,9 +174,9 @@ pro:()=>`Indeks Pembangunan Manusia (IPM) bukan sekadar angka. Ia merangkum tiga
 t1:()=>`${dl(mm(base(),'uhh',S.y)-mm(base(),'uhh',0),'tahun')} Detak demi detak, usia harapan hidup terus memanjang.`,
 t2:()=>{const a=P.filter(inP),h=mm(a,'hls',S.y),r=mm(a,'rls',S.y);return `Anak usia sekolah kini diharapkan belajar hingga ${f1(h)} tahun, tetapi orang dewasa rata-rata baru menamatkan ${f1(r)} tahun. Jarak <b>${f1(h-r)} tahun</b> itulah pekerjaan rumah pendidikan.`},
 t3:()=>{const b=base();return `${dl((mm(b,'pengeluaran',S.y)/mm(b,'pengeluaran',0)-1)*100,'%')} Dompet rata-rata warga ikut menebal, meski tidak merata.`},
-m1:()=>{const a=K.filter(inK),v=d=>d.ipm[S.y],hi=srt(a,v)[0],lo=srt(a,v,0)[0];return `Setiap wilayah berwarna adalah satu kabupaten/kota: ${a.length} wilayah untuk ${ar()}; makin terang warnanya, makin tinggi IPM-nya. Pada ${Y[S.y]}, rata-rata IPM-nya <b>${f1(d3.mean(a,v))}</b>. Wilayah paling terang ada di <b>${hi.n}</b> (${f1(v(hi))}), yang paling gelap di <b>${lo.n}</b> (${f1(v(lo))}). Selisih ${f1(v(hi)-v(lo))} poin: sama-sama warga Indonesia, beda peluang hidupnya.`},
+m1:()=>{const a=K.filter(inK),v=d=>d.ipm[S.y],hi=srt(a,v)[0],lo=srt(a,v,0)[0];return `Setiap titik adalah satu kabupaten/kota: ${a.length} titik untuk ${ar()}; makin terang warnanya, makin tinggi IPM-nya. Pada ${Y[S.y]}, rata-rata IPM-nya <b>${f1(d3.mean(a,v))}</b>. Titik paling terang ada di <b>${hi.n}</b> (${f1(v(hi))}), yang paling redup di <b>${lo.n}</b> (${f1(v(lo))}). Selisih ${f1(v(hi)-v(lo))} poin: sama-sama warga Indonesia, beda peluang hidupnya.`},
 m2:()=>{const a=K.filter(inK).filter(d=>d.mk[S.y]!=null);if(a.length<3)return 'Data kemiskinan wilayah ini belum lengkap pada tahun tersebut (daerah otonom baru). Coba tahun 2024–2025.';const h=a.filter(d=>d.mk[S.y]>=15),r=cor(a.map(d=>d.ipm[S.y]),a.map(d=>d.mk[S.y])),w=srt(a,d=>d.mk[S.y])[0];return `Balik warnanya: kini yang terang adalah kemiskinan. Pada ${Y[S.y]}, <b>${h.length} dari ${a.length}</b> kabupaten/kota di ${ar()} berpenduduk miskin 15% atau lebih; tertinggi <b>${w.n}</b> (${f1(w.mk[S.y])}%). Korelasinya dengan IPM <b>r = ${f1(r)}</b>: wilayah yang redup di peta pertama cenderung menyala di peta ini.`},
-m3:()=>{const a=K.filter(inK).filter(d=>d.jm[S.y]!=null);if(a.length<3)return 'Jumlah penduduk miskin wilayah ini belum lengkap pada tahun tersebut. Coba tahun 2024–2025.';const t=srt(a,d=>d.jm[S.y]).slice(0,3);return `Sekarang tinggi balok adalah jumlah orang miskin, bukan persentasenya. Terbesar di ${ar()}: ${t.map(d=>`<b>${d.n}</b> (${f1(d.jm[S.y])} ribu jiwa, ${f1(d.mk[S.y])}%)`).join(', ')}. Balok tinggi belum tentu wilayah termiskin; bisa jadi hanya yang paling padat. Karena itu satu cerita butuh dua peta.`},
+m3:()=>{const a=K.filter(inK).filter(d=>d.jm[S.y]!=null);if(a.length<3)return 'Jumlah penduduk miskin wilayah ini belum lengkap pada tahun tersebut. Coba tahun 2024–2025.';const t=srt(a,d=>d.jm[S.y]).slice(0,3);return `Sekarang ukuran lingkaran adalah jumlah orang miskin, bukan persentasenya. Terbesar di ${ar()}: ${t.map(d=>`<b>${d.n}</b> (${f1(d.jm[S.y])} ribu jiwa, ${f1(d.mk[S.y])}%)`).join(', ')}. Lingkaran besar belum tentu wilayah termiskin; bisa jadi hanya yang paling padat. Karena itu satu cerita butuh dua peta.`},
 p1:()=>{const R=pca(),v=R.ev.map(e=>e.lam/VV.length*100),t=R.ev[0].v.map((x,i)=>[VL[i],x]).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1])).slice(0,3).map(x=>x[0]);return `IPM hanya satu angka, padahal tiap provinsi punya sepuluh sisi: kesehatan, sekolah, pengeluaran, kemiskinan, pekerjaan, kesenjangan, sanitasi, dan air. Lewat PCA, ${R.X.length} provinsi pada ${Y[S.y]} diringkas menjadi dua sumbu yang memuat <b>${f1(v[0]+v[1])}%</b> informasi (PC1 ${f1(v[0])}%, PC2 ${f1(v[1])}%). Sumbu pertama paling ditentukan oleh <b>${t.join(', ')}</b>. Tarik kotak di plot kiri, dan garis yang sama menyala di plot kanan.`},
 p2:()=>{const R=pca(),o=R.sc.map((s,i)=>[Math.hypot(s[0],s[1]),i]).sort((a,b)=>b[0]-a[0])[0],q=R.X[o[1]];return `Provinsi yang paling menyendiri pada ${Y[S.y]} adalah <b>${q.n}</b>: jaraknya dari pusat peta paling jauh, artinya kombinasi sepuluh ukurannya tak mirip provinsi mana pun. Provinsi yang berdekatan di biplot punya wajah sosial-ekonomi serupa; yang berseberangan hidup di dunia yang sangat berbeda.`},
 end:()=>{const A=srt(P.filter(p=>p.v.ipm[S.y]!=null),p=>p.v.ipm[S.y]),a=A[0],z=A[A.length-1],kk=K.filter(d=>d.mk[S.y]!=null&&d.mk[S.y]>=30),ki=[...new Set(kk.map(d=>d.i))],q=P.find(p=>p.n===S.pv),v=p=>p.v.ipm[S.y],cat=x=>x<60?'rendah':x<70?'sedang':x<80?'tinggi':'sangat tinggi';let s=`Inilah puncaknya. Pada ${Y[S.y]}, IPM tertinggi ada di <b>${a.n}</b> (${f1(v(a))}) dan terendah di <b>${z.n}</b> (${f1(v(z))}): jaraknya <b>${f1(v(a)-v(z))} poin</b>, dari kategori "${cat(v(z))}" hingga "${cat(v(a))}" menurut BPS. `;if(kk.length)s+=`Ada ${kk.length} kabupaten/kota yang penduduknya miskin 30% atau lebih, ${ki.length===1?'seluruhnya di '+ki[0]:'tersebar di '+ki.join(', ')}. `;s+=q&&v(q)!=null?`${q.n} berada di peringkat <b>${A.findIndex(p=>p.n===q.n)+1}</b> dari ${A.length}.`:'Pilih provinsimu di panel bawah untuk melihat posisinya.';return s},
