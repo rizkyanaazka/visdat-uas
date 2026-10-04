@@ -3,6 +3,7 @@ Web storytelling interaktif (UAS Visualisasi Data dan Informasi 2026). Pembaca c
 
 ## Menjalankan
 https://ipmindo-20212025.vercel.app
+
 **Alur cerita:** pengenalan, tren per pulau, pilihan tahun/lokus, lalu klimaks dan penutup. Tema gelap/terang bisa dipilih pengguna.
 
 **Topik visualisasi:** multivariat (PCA + biplot + parallel coordinates + heatmap, brushing & linking), geospasial (peta titik 514 kab/kota: warna & simbol proporsional), hierarkis (treemap + sunburst 4 level, drill-down & breadcrumb).
