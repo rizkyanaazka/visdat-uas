@@ -13,10 +13,6 @@ https://ipmindo-20212025.vercel.app
 - `data.js` — data terolah, dibuat oleh `scripts/build_data.py`
 - `data/raw/` — berkas Excel asli (provinsi & kab/kota)
 
-## Sumber data (ISI SEBELUM DIKUMPULKAN)
-| Judul tabel/publikasi | Tahun data | URL | Tanggal akses |
-|---|---|---|---|
-| … | 2021–2025 | … | … |
 
 ## Catatan data
 - **Papua:** IPM 2021–2022 mengukur wilayah sebelum pemekaran (2022), sehingga tidak dibandingkan dengan 2023–2025.
